@@ -1,0 +1,77 @@
+<h2>Backend Changes — app.py</h2>
+<p class="subtitle">Section 2 of 4 — What changes in Flask. Does this look right?</p>
+
+<div class="section">
+  <h3>New dependencies</h3>
+  <div class="mockup">
+    <div class="mockup-header">requirements.txt</div>
+    <div class="mockup-body" style="font-family:monospace;font-size:0.85rem;line-height:1.8">
+<pre style="margin:0">flask>=3.0.0
+filelock>=3.13.0       # safe concurrent writes to topics.json
+gunicorn>=21.0.0       # production WSGI server</pre>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Configuration (env vars)</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="font-family:monospace;font-size:0.85rem;line-height:1.8">
+<pre style="margin:0">SECRET_KEY       # Flask session signing key (required in prod)
+SESSION_DIR      # where session dirs are stored (default: ./sessions)
+SESSION_TTL_H    # hours before idle session is cleaned up (default: 24)
+MAX_UPLOAD_MB    # max log file size in MB (default: 200)</pre>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>New / changed endpoints</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+    <tr style="border-bottom:1px solid #333">
+      <th style="text-align:left;padding:6px 8px;color:#aaa">Method</th>
+      <th style="text-align:left;padding:6px 8px;color:#aaa">Route</th>
+      <th style="text-align:left;padding:6px 8px;color:#aaa">Change</th>
+    </tr>
+    <tr style="border-bottom:1px solid #222">
+      <td style="padding:6px 8px;color:#57c98f">POST</td>
+      <td style="padding:6px 8px;font-family:monospace">/api/upload</td>
+      <td style="padding:6px 8px"><strong>NEW</strong> — accepts multipart file upload, saves to <code>sessions/&lt;id&gt;/log.txt</code>, returns <code>{lines, size_mb}</code></td>
+    </tr>
+    <tr style="border-bottom:1px solid #222">
+      <td style="padding:6px 8px;color:#4db6e8">GET</td>
+      <td style="padding:6px 8px;font-family:monospace">/api/logs</td>
+      <td style="padding:6px 8px"><strong>CHANGED</strong> — reads from <code>sessions/&lt;id&gt;/log.txt</code> instead of hardcoded <code>current_log.txt</code>. Returns 404 with <code>{error:"no_log"}</code> if no file uploaded yet.</td>
+    </tr>
+    <tr style="border-bottom:1px solid #222">
+      <td style="padding:6px 8px;color:#e8734d">DELETE</td>
+      <td style="padding:6px 8px;font-family:monospace">/api/session/log</td>
+      <td style="padding:6px 8px"><strong>NEW</strong> — lets user clear their uploaded log (frees disk space)</td>
+    </tr>
+    <tr style="border-bottom:1px solid #222">
+      <td style="padding:6px 8px;color:#4db6e8">GET/POST/PUT/DELETE</td>
+      <td style="padding:6px 8px;font-family:monospace">/api/topics<br>/api/groups</td>
+      <td style="padding:6px 8px"><strong>UNCHANGED</strong> in structure — but all writes now go through <code>filelock</code></td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>Session management</h3>
+  <ul style="line-height:2;font-size:0.9rem">
+    <li>On first request, Flask auto-creates a signed session cookie containing a <code>session_id</code> (UUID)</li>
+    <li>Each session gets a directory: <code>SESSION_DIR/&lt;session_id&gt;/</code> with <code>log.txt</code> and <code>meta.json</code> (last-seen timestamp)</li>
+    <li><code>meta.json</code> is touched on every <code>/api/logs</code> or <code>/api/upload</code> request</li>
+    <li>Background thread runs every hour, deletes session dirs where <code>last_seen &lt; now - TTL</code></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>File size limit</h3>
+  <ul style="line-height:2;font-size:0.9rem">
+    <li>Flask's <code>MAX_CONTENT_LENGTH</code> set from <code>MAX_UPLOAD_MB</code> (default 200 MB)</li>
+    <li>Returns HTTP 413 if exceeded — frontend shows a clear error message</li>
+  </ul>
+</div>
+
+<p class="subtitle">Does this backend design look right? Any changes needed?</p>

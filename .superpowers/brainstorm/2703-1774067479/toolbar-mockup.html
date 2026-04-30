@@ -1,0 +1,118 @@
+<h2>Toolbar & Overall Visual Style</h2>
+<p class="subtitle">Current vs Proposed — header, toolbar, stats bar</p>
+
+<div style="display:flex;flex-direction:column;gap:24px;">
+
+  <!-- CURRENT -->
+  <div class="mockup">
+    <div class="mockup-header">Current</div>
+    <div class="mockup-body" style="padding:0;font-family:'Segoe UI',sans-serif;background:#0f1117;">
+
+      <!-- Header -->
+      <div style="background:#1a1d27;border-bottom:1px solid #2a2e3d;padding:10px 16px;display:flex;align-items:center;gap:14px;">
+        <span style="font-size:1.05rem;font-weight:600;color:#e0e4f0;">Webex <span style="color:#5b9bd5;">Log Viewer</span></span>
+        <div style="flex:1;"></div>
+        <button style="font-size:0.8rem;padding:5px 12px;background:#1e2132;border:1px solid #2e3250;border-radius:5px;color:#b8bdd4;">Topic Viz</button>
+      </div>
+
+      <!-- Toolbar -->
+      <div style="background:#13161f;border-bottom:1px solid #22253a;padding:8px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+        <button style="font-size:0.8rem;padding:5px 12px;background:#1e3a5f;border:1px solid #2a5a90;border-radius:5px;color:#a8c8f0;">📂 Upload Log…</button>
+        <button style="font-size:0.8rem;padding:5px 12px;background:#3a1e1e;border:1px solid #602a2a;border-radius:5px;color:#f09090;">✕ Clear Log</button>
+        <div style="width:1px;height:20px;background:#22253a;"></div>
+        <span style="font-size:0.72rem;color:#6b7190;text-transform:uppercase;">Levels</span>
+        <span style="font-size:0.75rem;font-weight:600;padding:3px 9px;border-radius:4px;background:#1e2535;border:1px solid #3a4560;color:#8899bb;">Debug</span>
+        <span style="font-size:0.75rem;font-weight:600;padding:3px 9px;border-radius:4px;background:#0e2430;border:1px solid #1a5070;color:#5ab8e0;">Info</span>
+        <span style="font-size:0.75rem;font-weight:600;padding:3px 9px;border-radius:4px;background:#2a2010;border:1px solid #6a5010;color:#e0a830;">Warn</span>
+        <span style="font-size:0.75rem;font-weight:600;padding:3px 9px;border-radius:4px;background:#2e1010;border:1px solid #7a2020;color:#e05050;">Error</span>
+        <div style="width:1px;height:20px;background:#22253a;"></div>
+        <input placeholder="Search…" style="background:#1e2132;border:1px solid #2e3250;border-radius:5px;color:#d4d8e1;font-size:0.8rem;padding:5px 10px;width:160px;" />
+        <input placeholder="PID" style="background:#1e2132;border:1px solid #2e3250;border-radius:5px;color:#d4d8e1;font-size:0.8rem;padding:5px 10px;width:70px;" />
+        <input placeholder="TID" style="background:#1e2132;border:1px solid #2e3250;border-radius:5px;color:#d4d8e1;font-size:0.8rem;padding:5px 10px;width:70px;" />
+        <input placeholder="Source" style="background:#1e2132;border:1px solid #2e3250;border-radius:5px;color:#d4d8e1;font-size:0.8rem;padding:5px 10px;width:100px;" />
+      </div>
+
+      <!-- Stats bar -->
+      <div style="background:#0f1117;border-bottom:1px solid #1c1f2e;padding:4px 16px;font-size:0.73rem;color:#4e5474;display:flex;gap:18px;">
+        <span>Total: <span style="color:#8890b8;">12,450</span></span>
+        <span>Shown: <span style="color:#8890b8;">8,302</span></span>
+        <span>Debug: <span style="color:#8890b8;">5,100</span></span>
+        <span>Info: <span style="color:#8890b8;">2,800</span></span>
+        <span>Warn: <span style="color:#8890b8;">302</span></span>
+        <span>Error: <span style="color:#8890b8;">100</span></span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROPOSED -->
+  <div class="mockup">
+    <div class="mockup-header" style="background:#1e4060;border-color:#2a5a80;">Proposed</div>
+    <div class="mockup-body" style="padding:0;font-family:'Segoe UI',sans-serif;background:#0a0d14;">
+
+      <!-- Header — richer gradient feel -->
+      <div style="background:linear-gradient(135deg,#111827,#0f172a);border-bottom:1px solid #1e2535;padding:10px 18px;display:flex;align-items:center;gap:14px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,#3b82f6,#06b6d4);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;">📋</div>
+          <span style="font-size:1.05rem;font-weight:700;color:#f0f4ff;letter-spacing:-0.01em;">Webex <span style="background:linear-gradient(90deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Log Viewer</span></span>
+        </div>
+        <div style="flex:1;"></div>
+        <button style="font-size:0.8rem;padding:6px 14px;background:linear-gradient(135deg,#1e3a5f,#1a3050);border:1px solid #2a5080;border-radius:6px;color:#7ab8e0;font-weight:500;display:flex;align-items:center;gap:5px;">
+          <span style="font-size:0.75rem;">📊</span> Topic Viz
+        </button>
+      </div>
+
+      <!-- Toolbar — grouped, cleaner -->
+      <div style="background:#0d1020;border-bottom:1px solid #1a1f30;padding:8px 18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <!-- File group -->
+        <div style="display:flex;gap:5px;align-items:center;padding-right:12px;border-right:1px solid #1e2535;">
+          <button style="font-size:0.8rem;padding:6px 13px;background:linear-gradient(135deg,#1a3a5a,#153050);border:1px solid #2a5070;border-radius:6px;color:#60a5fa;font-weight:500;">⬆ Upload Log</button>
+          <button style="font-size:0.8rem;padding:6px 13px;background:#140e0e;border:1px solid #3a1818;border-radius:6px;color:#f87171;">✕ Clear</button>
+        </div>
+
+        <!-- Level filters -->
+        <div style="display:flex;gap:4px;align-items:center;padding-right:12px;border-right:1px solid #1e2535;">
+          <span style="font-size:0.68rem;color:#3a4468;text-transform:uppercase;letter-spacing:.08em;margin-right:2px;">Level</span>
+          <span style="font-size:0.72rem;font-weight:600;padding:3px 8px;border-radius:5px;background:#151c2e;border:1px solid #2a3a56;color:#7a90b8;">DBG</span>
+          <span style="font-size:0.72rem;font-weight:600;padding:3px 8px;border-radius:5px;background:#0a1e30;border:1px solid #1a4a6a;color:#38bdf8;">INF</span>
+          <span style="font-size:0.72rem;font-weight:600;padding:3px 8px;border-radius:5px;background:#1e1800;border:1px solid #5a4400;color:#fbbf24;">WRN</span>
+          <span style="font-size:0.72rem;font-weight:600;padding:3px 8px;border-radius:5px;background:#1e0808;border:1px solid #6a1818;color:#f87171;">ERR</span>
+          <span style="font-size:0.72rem;font-weight:600;padding:3px 8px;border-radius:5px;background:#180618;border:1px solid #5a1260;color:#e879f9;">FAT</span>
+        </div>
+
+        <!-- Search & filters -->
+        <div style="display:flex;gap:6px;align-items:center;flex:1;">
+          <div style="display:flex;align-items:center;gap:6px;background:#111520;border:1px solid #1e2840;border-radius:6px;padding:5px 10px;flex:1;max-width:220px;">
+            <span style="color:#3a4468;font-size:0.8rem;">🔍</span>
+            <span style="font-size:0.8rem;color:#2a3458;">Search logs…</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;background:#111520;border:1px solid #1e2840;border-radius:6px;padding:5px 10px;width:72px;">
+            <span style="font-size:0.75rem;color:#2a3458;">PID…</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;background:#111520;border:1px solid #1e2840;border-radius:6px;padding:5px 10px;width:72px;">
+            <span style="font-size:0.75rem;color:#2a3458;">TID…</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;background:#111520;border:1px solid #1e2840;border-radius:6px;padding:5px 10px;width:90px;">
+            <span style="font-size:0.75rem;color:#2a3458;">Source…</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats bar — pill badges -->
+      <div style="background:#08090f;border-bottom:1px solid #12151e;padding:5px 18px;font-size:0.72rem;color:#2a3050;display:flex;gap:10px;align-items:center;">
+        <span>Total <span style="color:#4a6090;background:#0e1220;border:1px solid #1a2030;border-radius:10px;padding:1px 7px;margin-left:3px;">12,450</span></span>
+        <span>Shown <span style="color:#4a8060;background:#081810;border:1px solid #0e3020;border-radius:10px;padding:1px 7px;margin-left:3px;">8,302</span></span>
+        <span style="color:#2a3868;">DBG <span style="color:#3a5080;">5,100</span></span>
+        <span style="color:#1a4060;">INF <span style="color:#2a6080;">2,800</span></span>
+        <span style="color:#3a3010;">WRN <span style="color:#6a5820;">302</span></span>
+        <span style="color:#3a1010;">ERR <span style="color:#7a3030;">100</span></span>
+        <div style="flex:1;"></div>
+        <span style="color:#2a4060;">2 topics active</span>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<p style="margin-top:12px;font-size:0.8rem;color:#5a6080;">Key changes: gradient header with logo icon, grouped toolbar with dividers, abbreviated level labels (DBG/INF/WRN/ERR/FAT), pill badges in stats bar, deeper background colors.</p>

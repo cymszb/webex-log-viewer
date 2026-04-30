@@ -1,0 +1,87 @@
+<h2>Regex Search + Save as Topic — Design Mockup v3</h2>
+<p class="subtitle">Three states of the enhanced search input</p>
+
+<style>
+  .demo-wrap { display: flex; flex-direction: column; gap: 28px; margin: 0 auto; max-width: 680px; }
+  .state-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: .1em; color: #6b7280; margin-bottom: 8px; }
+  .search-row { display: flex; align-items: center; gap: 6px; background: #0f1117; border-radius: 10px; padding: 14px 16px; flex-wrap: wrap; }
+  .regex-toggle { font-family: monospace; font-size: 0.78rem; font-weight: 700; padding: 3px 7px; border-radius: 5px; border: 1px solid #2a3050; background: #1a1f30; color: #6b7280; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .regex-toggle.active { background: #1a2f50; border-color: #3b82f6; color: #60a5fa; }
+  .input-wrap { position: relative; flex: 1; min-width: 160px; display: flex; align-items: center; border-radius: 6px; border: 1px solid #2a3050; background: #141824; }
+  .input-wrap.regex-mode { border-color: #3b82f6; }
+  .input-wrap.regex-invalid { border-color: #ef4444; }
+  .input-wrap input { flex: 1; padding: 5px 10px; border: none; background: transparent; color: #c0cce8; font-size: 0.82rem; outline: none; min-width: 0; }
+  .input-wrap.regex-mode input { font-family: monospace; color: #93c5fd; }
+  .input-wrap.regex-invalid input { color: #f87171; }
+  .save-btn-inline { font-size: 0.68rem; padding: 2px 8px; margin-right: 4px; border-radius: 4px; border: 1px solid #10b981; background: #0f2e1a; color: #34d399; cursor: pointer; white-space: nowrap; flex-shrink: 0; font-weight: 500; line-height: 1.6; }
+  .save-btn-inline:hover { background: #133d22; }
+  .other-inputs { display: flex; gap: 6px; flex-shrink: 0; }
+  .other-inputs input { padding: 5px 8px; border-radius: 6px; border: 1px solid #2a3050; background: #141824; color: #6b7280; font-size: 0.78rem; width: 80px; outline: none; }
+  .state-desc { font-size: 0.78rem; color: #9ca3af; margin-top: 6px; padding-left: 2px; }
+  .tag { display: inline-block; font-size: 0.68rem; padding: 1px 6px; border-radius: 4px; font-weight: 600; margin-left: 4px; }
+  .tag-blue  { background: #1e3a5f; color: #60a5fa; border: 1px solid #3b82f6; }
+  .tag-red   { background: #3a1010; color: #f87171; border: 1px solid #ef4444; }
+  .tag-green { background: #0f2e1a; color: #34d399; border: 1px solid #10b981; }
+</style>
+
+<div class="demo-wrap">
+
+  <!-- State 1: Plain mode -->
+  <div>
+    <div class="state-label">State 1 — Plain text mode (default)</div>
+    <div class="search-row">
+      <button class="regex-toggle">.*</button>
+      <div class="input-wrap">
+        <input type="text" placeholder="Full-text search…" value="connection timeout" />
+      </div>
+      <div class="other-inputs">
+        <input type="text" placeholder="PID…" />
+        <input type="text" placeholder="TID…" />
+        <input type="text" placeholder="File/Class…" />
+      </div>
+    </div>
+    <div class="state-desc">
+      <span class="tag tag-blue">.*</span> button inactive (grey). Plain substring match. No "Save as Topic" inside the box.
+    </div>
+  </div>
+
+  <!-- State 2: Regex mode, valid pattern -->
+  <div>
+    <div class="state-label">State 2 — Regex mode, valid pattern</div>
+    <div class="search-row">
+      <button class="regex-toggle active">.*</button>
+      <div class="input-wrap regex-mode">
+        <input type="text" value="(timeout|refused)\s+\d+" />
+        <button class="save-btn-inline">Save as Topic</button>
+      </div>
+      <div class="other-inputs">
+        <input type="text" placeholder="PID…" />
+        <input type="text" placeholder="TID…" />
+        <input type="text" placeholder="File/Class…" />
+      </div>
+    </div>
+    <div class="state-desc">
+      Blue border on the box. Monospace font. <span class="tag tag-green">Save as Topic</span> button sits inside the right edge of the input box — only when regex is valid.
+    </div>
+  </div>
+
+  <!-- State 3: Regex mode, invalid pattern -->
+  <div>
+    <div class="state-label">State 3 — Regex mode, invalid pattern</div>
+    <div class="search-row">
+      <button class="regex-toggle active">.*</button>
+      <div class="input-wrap regex-invalid">
+        <input type="text" value="(unclosed[bracket" />
+      </div>
+      <div class="other-inputs">
+        <input type="text" placeholder="PID…" />
+        <input type="text" placeholder="TID…" />
+        <input type="text" placeholder="File/Class…" />
+      </div>
+    </div>
+    <div class="state-desc">
+      <span class="tag tag-red">invalid regex</span> Red border. No "Save as Topic" button. 0 results shown.
+    </div>
+  </div>
+
+</div>

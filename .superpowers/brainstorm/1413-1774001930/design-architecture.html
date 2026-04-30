@@ -1,0 +1,62 @@
+<h2>Architecture — Multi-User Server-Side Sessions</h2>
+<p class="subtitle">Section 1 of 4 — Overall structure. Does this look right?</p>
+
+<div class="section">
+  <div class="mockup">
+    <div class="mockup-header">System Architecture</div>
+    <div class="mockup-body" style="font-family:monospace;font-size:0.85rem;line-height:1.8">
+      <pre style="margin:0;white-space:pre-wrap">
+┌─────────────────────────────────────────────────────────────┐
+│                    Browser (per user)                        │
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  index.html  (vanilla JS, no build step)             │   │
+│  │                                                      │   │
+│  │  • Upload panel  →  POST /api/upload                 │   │
+│  │  • Log table     →  GET  /api/logs                   │   │
+│  │  • Topics sidebar→  CRUD /api/topics + /api/groups   │   │
+│  │  • Timeline viz  →  canvas (unchanged)               │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                  HTTP + session cookie                       │
+└─────────────────────┬───────────────────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────────────────┐
+│               Flask  (gunicorn workers)                      │
+│                                                             │
+│  Session cookie  →  identifies user                         │
+│                                                             │
+│  POST /api/upload   parse + save to session log dir         │
+│  GET  /api/logs     read from session log dir               │
+│  CRUD /api/topics   read/write topics.json  (filelock)      │
+│  CRUD /api/groups   same file, same lock                    │
+│                                                             │
+│  Background TTL cleaner  (thread or cron)                   │
+│    → deletes session dirs idle > N hours                    │
+└──────────┬──────────────────────┬───────────────────────────┘
+           │                      │
+  ┌────────▼────────┐    ┌────────▼──────────────────────┐
+  │   topics.json   │    │  sessions/                    │
+  │  (shared, all   │    │    &lt;session_id&gt;/              │
+  │   users)        │    │      log.txt   (uploaded file) │
+  │  filelock for   │    │      meta.json (last-seen ts)  │
+  │  concurrent     │    │                               │
+  │  writes         │    │  cleaned up after TTL expiry  │
+  └─────────────────┘    └───────────────────────────────┘</pre>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Key design decisions</h3>
+  <ul style="line-height:2">
+    <li><strong>Session cookie</strong> — Flask's built-in signed cookie (<code>SECRET_KEY</code>). No DB needed. Session ID maps to a directory on disk.</li>
+    <li><strong>Log isolation</strong> — each session gets its own <code>sessions/&lt;id&gt;/log.txt</code>. Users never see each other's data.</li>
+    <li><strong>Shared topics</strong> — <code>topics.json</code> is still a flat file, protected by <code>filelock</code> for safe concurrent reads/writes.</li>
+    <li><strong>TTL cleanup</strong> — a background thread checks session dirs every hour; deletes any idle longer than 24h (configurable).</li>
+    <li><strong>Drag &amp; drop removed</strong> — all log loading goes through <code>POST /api/upload</code>. Simplifies the frontend and eliminates the duplicate JS parser.</li>
+    <li><strong>No auth</strong> — sessions are anonymous. Anyone with the URL can use the app.</li>
+    <li><strong>Deployment</strong> — <code>gunicorn</code> + <code>nginx</code>. <code>SECRET_KEY</code> and session dir path set via environment variables.</li>
+  </ul>
+</div>
+
+<p class="subtitle">Does this overall architecture look right? Any concerns before we go deeper?</p>

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init *)",
+      "Bash(git config *)",
+      "Bash(git -C /e/Development/WebexApp_Log_Viewer status)",
+      "Bash(git -C /e/Development/WebexApp_Log_Viewer add -A)"
+    ]
+  }
+}

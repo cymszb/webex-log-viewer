@@ -1,0 +1,122 @@
+<h2>Filter Panel Layout</h2>
+<p class="subtitle">Replace the single-line toolbar with a compact wrapping panel. Which grouping feels right?</p>
+
+<div class="cards">
+
+  <!-- Option A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:'Segoe UI',sans-serif;font-size:0.72rem;background:#0a0d14;border-radius:6px;padding:8px;border:1px solid #1e2535;">
+        <!-- Row 1: upload + log status -->
+        <div style="display:flex;align-items:center;gap:8px;padding-bottom:6px;border-bottom:1px solid #1a2030;margin-bottom:6px;flex-wrap:wrap;">
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a2535;border:1px solid #2a3a5a;border-radius:4px;color:#7ab8e0;">📄 Upload Log…</button>
+          <span style="color:#5a6888;font-size:0.68rem;">No log loaded</span>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a2030;border:1px solid #2a3050;border-radius:4px;color:#4a5880;" disabled>✕ Clear Log</button>
+        </div>
+        <!-- Row 2: level + search -->
+        <div style="display:flex;align-items:center;gap:8px;padding-bottom:6px;border-bottom:1px solid #1a2030;margin-bottom:6px;flex-wrap:wrap;">
+          <span style="color:#3a4468;text-transform:uppercase;font-size:0.65rem;letter-spacing:.06em;">Level</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#6888a8;font-size:0.68rem;">Debug</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#6888a8;font-size:0.68rem;">Info</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#d4a84b;font-size:0.68rem;">Warning</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#e87070;font-size:0.68rem;">Error</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#e87070;font-size:0.68rem;">Fatal</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#6888a8;font-size:0.68rem;">Other</span>
+          <span style="color:#2a3458;font-size:0.7rem;">|</span>
+          <span style="color:#3a4468;text-transform:uppercase;font-size:0.65rem;letter-spacing:.06em;">Search</span>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:140px;">Full-text search…</div>
+        </div>
+        <!-- Row 3: filters + actions -->
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="color:#3a4468;text-transform:uppercase;font-size:0.65rem;letter-spacing:.06em;">PID</span>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:60px;">5232…</div>
+          <span style="color:#3a4468;text-transform:uppercase;font-size:0.65rem;letter-spacing:.06em;">TID</span>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:70px;">0x2962…</div>
+          <span style="color:#3a4468;text-transform:uppercase;font-size:0.65rem;letter-spacing:.06em;">File/Class</span>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:120px;">main.cpp…</div>
+          <span style="color:#2a3458;font-size:0.7rem;">|</span>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a1020;border:1px solid #3a2030;border-radius:4px;color:#e87070;">↑ Prev Error</button>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a1020;border:1px solid #3a2030;border-radius:4px;color:#e87070;">↓ Next Error</button>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a1a28;border:1px solid #2a3050;border-radius:4px;color:#5a6888;">✕ Clear Filters</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — 3 fixed rows</h3>
+      <p>Upload · Level+Search · Filters+Actions. Always 3 rows, clear visual rhythm.</p>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:'Segoe UI',sans-serif;font-size:0.72rem;background:#0a0d14;border-radius:6px;padding:8px;border:1px solid #1e2535;">
+        <!-- All items flow freely, wrap naturally -->
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;row-gap:6px;">
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a2535;border:1px solid #2a3a5a;border-radius:4px;color:#7ab8e0;">📄 Upload Log…</button>
+          <span style="color:#5a6888;font-size:0.68rem;">No log loaded</span>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a2030;border:1px solid #2a3050;border-radius:4px;color:#4a5880;" disabled>✕ Clear Log</button>
+          <span style="color:#2a3458;">·</span>
+          <span style="color:#3a4468;text-transform:uppercase;font-size:0.65rem;letter-spacing:.06em;">Level</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#6888a8;font-size:0.68rem;">Debug</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#6888a8;font-size:0.68rem;">Info</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#d4a84b;font-size:0.68rem;">Warning</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#e87070;font-size:0.68rem;">Error</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#e87070;font-size:0.68rem;">Fatal</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#6888a8;font-size:0.68rem;">Other</span>
+          <span style="color:#2a3458;">·</span>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:130px;">🔍 Full-text search…</div>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:55px;">PID…</div>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:65px;">TID…</div>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:110px;">File/Class…</div>
+          <span style="color:#2a3458;">·</span>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a1020;border:1px solid #3a2030;border-radius:4px;color:#e87070;">↑ Prev Error</button>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a1020;border:1px solid #3a2030;border-radius:4px;color:#e87070;">↓ Next Error</button>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a1a28;border:1px solid #2a3050;border-radius:4px;color:#5a6888;">✕ Clear Filters</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — free flow, no rows</h3>
+      <p>All controls in one flex container, wrap based on window width. Most flexible, fewest lines on wide screens.</p>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:'Segoe UI',sans-serif;font-size:0.72rem;background:#0a0d14;border-radius:6px;padding:8px;border:1px solid #1e2535;">
+        <!-- Row 1: upload -->
+        <div style="display:flex;align-items:center;gap:8px;padding-bottom:5px;margin-bottom:5px;border-bottom:1px solid #1a2030;flex-wrap:wrap;">
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a2535;border:1px solid #2a3a5a;border-radius:4px;color:#7ab8e0;">📄 Upload Log…</button>
+          <span style="color:#5a6888;font-size:0.68rem;">No log loaded</span>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a2030;border:1px solid #2a3050;border-radius:4px;color:#4a5880;" disabled>✕ Clear Log</button>
+          <div style="flex:1"></div>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a1020;border:1px solid #3a2030;border-radius:4px;color:#e87070;">↑ Prev Error</button>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a1020;border:1px solid #3a2030;border-radius:4px;color:#e87070;">↓ Next Error</button>
+          <button style="font-size:0.7rem;padding:3px 8px;background:#1a1a28;border:1px solid #2a3050;border-radius:4px;color:#5a6888;">✕ Clear</button>
+        </div>
+        <!-- Row 2: all filters flow -->
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;row-gap:4px;">
+          <span style="color:#3a4468;text-transform:uppercase;font-size:0.65rem;letter-spacing:.06em;">Level</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#6888a8;font-size:0.68rem;">Debug</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#6888a8;font-size:0.68rem;">Info</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#d4a84b;font-size:0.68rem;">Warning</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#e87070;font-size:0.68rem;">Error</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#e87070;font-size:0.68rem;">Fatal</span>
+          <span style="padding:2px 6px;border-radius:3px;background:#0e1a28;border:1px solid #1e3048;color:#6888a8;font-size:0.68rem;">Other</span>
+          <span style="color:#2a3458;">|</span>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:130px;">🔍 Search…</div>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:55px;">PID…</div>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:65px;">TID…</div>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:4px;padding:3px 8px;color:#3a4468;font-size:0.7rem;width:120px;">File/Class…</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — upload row + filter row</h3>
+      <p>Upload & navigation actions pinned to row 1. All filter controls flow freely in row 2.</p>
+    </div>
+  </div>
+
+</div>

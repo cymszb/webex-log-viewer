@@ -1,0 +1,68 @@
+<h2>Deployment & File Structure</h2>
+<p class="subtitle">Section 4 of 4 — How to run it in production. Does this look right?</p>
+
+<div class="section">
+  <h3>New project structure</h3>
+  <div class="mockup">
+    <div class="mockup-header">File layout</div>
+    <div class="mockup-body" style="font-family:monospace;font-size:0.85rem;line-height:1.8">
+<pre style="margin:0">WebexApp_Log_Viewer/
+├── app.py                  # Flask backend (modified)
+├── requirements.txt        # + filelock, gunicorn
+├── .env.example            # documents env vars
+├── sessions/               # created at runtime, gitignored
+│   └── &lt;session_id&gt;/
+│       ├── log.txt
+│       └── meta.json
+├── templates/
+│   └── index.html          # frontend (modified)
+├── topics.json             # shared config (unchanged format)
+├── .gitignore              # add: sessions/, current_log*.txt
+├── README.md               # updated
+└── USER_GUIDE.md           # updated</pre>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Running locally (development)</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="font-family:monospace;font-size:0.85rem;line-height:1.8">
+<pre style="margin:0">pip install -r requirements.txt
+python app.py                  # still works exactly as before</pre>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Running on a server (production)</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="font-family:monospace;font-size:0.85rem;line-height:1.8">
+<pre style="margin:0"># Set environment variables
+export SECRET_KEY="change-me-to-a-random-string"
+export SESSION_DIR="/var/lib/webex-log-viewer/sessions"
+export SESSION_TTL_H=24
+export MAX_UPLOAD_MB=200
+
+# Start with gunicorn (4 workers)
+gunicorn -w 4 -b 0.0.0.0:8098 app:app</pre>
+    </div>
+  </div>
+  <ul style="line-height:2;font-size:0.9rem;margin-top:0.75rem">
+    <li>Put <strong>nginx</strong> in front for SSL termination and static file caching</li>
+    <li><strong>client_max_body_size</strong> in nginx must match <code>MAX_UPLOAD_MB</code></li>
+    <li><code>SECRET_KEY</code> must be set — app refuses to start without it in production mode</li>
+    <li><code>sessions/</code> directory must be writable by the gunicorn process</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>What does NOT change</h3>
+  <ul style="line-height:2;font-size:0.9rem">
+    <li><code>topics.json</code> format — fully backward compatible, existing config carries over</li>
+    <li>No database migration, no schema, no external services</li>
+    <li>Local single-user usage (<code>python app.py</code>) still works with zero config</li>
+  </ul>
+</div>
+
+<p class="subtitle">Does this deployment design look right? Any changes needed?</p>

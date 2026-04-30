@@ -1,0 +1,19 @@
+# Python build artifacts
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Runtime files
+server.log
+.env
+
+# Uploaded log files (large)
+current_log*.txt
+sessions/
+
+# OS files
+*.lnk
+
+# Research notes (not part of the project)
+CLAUDE_SDK_ANALYSIS.md
+CLAUDE_SDK_DETAILED_ANALYSIS.md

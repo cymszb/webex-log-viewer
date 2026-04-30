@@ -1,0 +1,62 @@
+<h2>Frontend Changes — index.html</h2>
+<p class="subtitle">Section 3 of 4 — What changes in the browser. Does this look right?</p>
+
+<div class="section">
+  <h3>What's removed</h3>
+  <ul style="line-height:2;font-size:0.9rem">
+    <li><strong>Drag &amp; drop</strong> — the drop overlay, <code>FileReader</code> handler, and client-side <code>parseLine()</code> function are all removed</li>
+    <li><strong>"Load from Server" button</strong> — replaced by the upload panel below</li>
+    <li><strong>All client-side log parsing logic</strong> — server now owns parsing entirely</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>What's added — Upload panel</h3>
+  <div class="mockup">
+    <div class="mockup-header">Toolbar area (top of page)</div>
+    <div class="mockup-body" style="padding:1rem">
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;background:#1a1a2e;padding:0.75rem 1rem;border-radius:6px">
+        <span style="color:#aaa;font-size:0.85rem">No log loaded</span>
+        <label style="background:#4db6e8;color:#000;padding:0.4rem 0.9rem;border-radius:4px;cursor:pointer;font-size:0.85rem;font-weight:600">
+          Upload Log…
+          <input type="file" accept=".txt" style="display:none">
+        </label>
+        <div style="background:#222;border-radius:4px;overflow:hidden;height:6px;width:120px;display:none">
+          <div style="background:#4db6e8;height:100%;width:60%"></div>
+        </div>
+        <span style="color:#57c98f;font-size:0.8rem;display:none">✓ 42,310 lines loaded</span>
+        <button style="background:transparent;border:1px solid #555;color:#aaa;padding:0.3rem 0.7rem;border-radius:4px;font-size:0.8rem;cursor:pointer">Clear Log</button>
+      </div>
+    </div>
+  </div>
+  <ul style="line-height:2;font-size:0.9rem;margin-top:0.75rem">
+    <li>File picker opens on "Upload Log…" click</li>
+    <li>Progress bar shown during upload (XHR with <code>upload.onprogress</code>)</li>
+    <li>On success: status shows line count; log table loads automatically via <code>GET /api/logs</code></li>
+    <li>On error (413 too large, 400 bad file): clear inline error message</li>
+    <li>"Clear Log" calls <code>DELETE /api/session/log</code> and resets the table</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>What's unchanged</h3>
+  <ul style="line-height:2;font-size:0.9rem">
+    <li>Log table, columns, pagination, level/PID/TID/source filters — <strong>identical</strong></li>
+    <li>Full-text search and error navigation — <strong>identical</strong></li>
+    <li>Topics sidebar (list view, edit view, groups, drag-and-drop) — <strong>identical</strong></li>
+    <li>Events editor — <strong>identical</strong></li>
+    <li>Topic Visualization timeline (canvas) — <strong>identical</strong></li>
+    <li>All keyboard shortcuts — <strong>identical</strong></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>Session awareness</h3>
+  <ul style="line-height:2;font-size:0.9rem">
+    <li>On page load, <code>GET /api/logs</code> is called — if it returns <code>{error:"no_log"}</code>, the table shows an empty state with "Upload a log file to get started"</li>
+    <li>No login UI needed — the browser's session cookie handles identity transparently</li>
+    <li>If a user refreshes the page and their session is still valid, their log is still there</li>
+  </ul>
+</div>
+
+<p class="subtitle">Does this frontend design look right? Any changes needed?</p>

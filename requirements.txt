@@ -1,0 +1,4 @@
+flask>=3.0.0
+filelock>=3.13.0
+gunicorn>=21.0.0
+pytest>=8.0.0

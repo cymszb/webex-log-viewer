@@ -1,0 +1,91 @@
+<h2>Topic Edit Modal</h2>
+<p class="subtitle">Clicking ✎ on any topic opens this centered modal overlay</p>
+
+<div style="position:relative;background:#0a0d14;border-radius:8px;overflow:hidden;min-height:420px;font-family:'Segoe UI',sans-serif;">
+
+  <!-- Dimmed background hint -->
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(2px);z-index:1;"></div>
+
+  <!-- Blurred app behind (just a hint) -->
+  <div style="padding:20px;color:#1a2030;font-size:0.75rem;line-height:2;">
+    [toolbar] [sidebar] [log table rows behind...]<br/>
+    [log row] [log row] [log row] [log row]<br/>
+    [log row] [log row] [log row] [log row]
+  </div>
+
+  <!-- Modal -->
+  <div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#111520;border:1px solid #2a3050;border-radius:10px;width:100%;max-width:520px;box-shadow:0 24px 60px rgba(0,0,0,0.7);overflow:hidden;">
+
+      <!-- Modal header -->
+      <div style="display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid #1e2535;background:#0e1220;">
+        <span style="font-size:0.95rem;font-weight:600;color:#c8d0e8;flex:1;">Edit Topic</span>
+        <button style="width:28px;height:28px;padding:0;background:none;border:1px solid #2a3050;border-radius:6px;color:#4a5890;font-size:1rem;">✕</button>
+      </div>
+
+      <!-- Modal body -->
+      <div style="padding:18px;display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Name -->
+        <div>
+          <label style="font-size:0.72rem;color:#4a5890;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;">Name</label>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:6px;padding:8px 12px;font-size:0.85rem;color:#c8d0e8;">In-Meeting CPU</div>
+        </div>
+
+        <!-- Pattern -->
+        <div>
+          <label style="font-size:0.72rem;color:#4a5890;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;">Regex Pattern</label>
+          <div style="background:#0e1220;border:1px solid #2a5070;border-radius:6px;padding:8px 12px;font-size:0.82rem;color:#60a5fa;font-family:monospace;">onCpuSnapshot|TelephonyTelemetry</div>
+          <div style="margin-top:4px;font-size:0.72rem;color:#34d399;">✓ Valid regex</div>
+        </div>
+
+        <!-- Color -->
+        <div>
+          <label style="font-size:0.72rem;color:#4a5890;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:8px;">Color</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            ${['#60a5fa','#34d399','#f59e0b','#f87171','#a78bfa','#e879f9','#38bdf8','#fb923c','#4ade80','#facc15'].map((c,i) => `
+            <span style="width:22px;height:22px;border-radius:50%;background:${c};cursor:pointer;box-shadow:${i===2?'0 0 0 2px #0e1220, 0 0 0 4px '+c:'none'};"></span>`).join('')}
+          </div>
+        </div>
+
+        <!-- Group -->
+        <div>
+          <label style="font-size:0.72rem;color:#4a5890;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;">Group</label>
+          <div style="background:#0e1220;border:1px solid #2a3050;border-radius:6px;padding:8px 12px;font-size:0.85rem;color:#8090b8;display:flex;align-items:center;justify-content:space-between;">
+            <span>Performance</span>
+            <span style="color:#3a4468;font-size:0.75rem;">▾</span>
+          </div>
+        </div>
+
+        <!-- Events section -->
+        <div style="border-top:1px solid #1e2535;padding-top:14px;">
+          <div style="display:flex;align-items:center;margin-bottom:10px;">
+            <span style="font-size:0.72rem;color:#4a5890;text-transform:uppercase;letter-spacing:.08em;flex:1;">Events <span style="color:#2a3458;">(3)</span></span>
+            <button style="font-size:0.75rem;padding:4px 10px;background:#0e1220;border:1px solid #2a3050;border-radius:5px;color:#60a5fa;">+ Add Event</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            ${[['Main CPU','#f59e0b','metric'],['Media CPU','#f87171','metric'],['Turbo Factor','#a78bfa','metric']].map(([name,color,mode]) => `
+            <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:#0e1220;border-radius:6px;border:1px solid #1a2030;">
+              <span style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;"></span>
+              <span style="flex:1;font-size:0.8rem;color:#8090b8;">${name}</span>
+              <span style="font-size:0.68rem;padding:1px 6px;background:#0e2030;color:#38bdf8;border:1px solid #1a4060;border-radius:3px;">${mode}</span>
+              <button style="width:22px;height:22px;padding:0;font-size:0.75rem;background:none;border:1px solid #1e2535;border-radius:4px;color:#3a4870;">✎</button>
+              <button style="width:22px;height:22px;padding:0;font-size:0.75rem;background:none;border:1px solid #1e2535;border-radius:4px;color:#3a4870;">🗑</button>
+            </div>`).join('')}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div style="display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid #1e2535;background:#0e1220;">
+        <button style="font-size:0.82rem;padding:7px 16px;background:#111520;border:1px solid #2a3050;border-radius:6px;color:#6878a8;">Cancel</button>
+        <button style="font-size:0.82rem;padding:7px 16px;background:linear-gradient(135deg,#1a3a5a,#153050);border:1px solid #2a5070;border-radius:6px;color:#60a5fa;font-weight:500;">Save</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<p style="margin-top:12px;font-size:0.8rem;color:#5a6080;">The sidebar stays visible behind the dimmed overlay. The modal contains name, regex, color picker, group, and events list — all in one place with plenty of room.</p>

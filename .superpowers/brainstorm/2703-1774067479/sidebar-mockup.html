@@ -1,0 +1,83 @@
+<h2>Sidebar Redesign</h2>
+<p class="subtitle">Current vs Proposed — which feel better?</p>
+
+<div class="split" style="gap:24px;align-items:flex-start;">
+
+  <!-- CURRENT -->
+  <div class="mockup" style="flex:1;">
+    <div class="mockup-header">Current</div>
+    <div class="mockup-body" style="background:#13161f;padding:0;font-family:'Segoe UI',sans-serif;">
+
+      <div style="display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #22253a;background:#161924;">
+        <span style="font-size:0.8rem;font-weight:600;color:#a0a8c8;flex:1;">Topics</span>
+        <span style="font-size:0.7rem;color:#5a6080;">2 active</span>
+      </div>
+
+      <div style="padding:8px;display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;gap:4px;">
+          <button style="flex:1;font-size:0.78rem;padding:5px 8px;background:#1e2132;border:1px solid #2e3250;border-radius:5px;color:#b8bdd4;">+ New Topic</button>
+          <button style="flex:1;font-size:0.72rem;padding:5px 6px;background:#1e2132;border:1px solid #2e3250;border-radius:5px;color:#b8bdd4;">+ New Group</button>
+        </div>
+
+        <!-- topic rows — small & cramped -->
+        <div style="font-size:0.7rem;color:#5a6080;text-transform:uppercase;letter-spacing:.08em;padding:2px 0;">Ungrouped</div>
+        ${['Virtual Channel','Platform info','VDI info','In-Meeting CPU','App CPU','UIHang'].map(name => `
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;background:#1a1d2a;border-radius:4px;border:1px solid #22253a;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#4db6e8;flex-shrink:0;"></span>
+          <div style="flex:1;min-width:0;overflow:hidden;">
+            <div style="font-size:0.75rem;color:#c0c8e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</div>
+          </div>
+          <button style="padding:2px 5px;font-size:0.7rem;background:none;border:1px solid #2e3250;border-radius:3px;color:#5a6080;">○</button>
+          <button style="padding:2px 5px;font-size:0.7rem;background:none;border:1px solid #2e3250;border-radius:3px;color:#5a6080;">✎</button>
+          <button style="padding:2px 5px;font-size:0.7rem;background:none;border:1px solid #2e3250;border-radius:3px;color:#5a6080;">🗑</button>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <!-- PROPOSED -->
+  <div class="mockup" style="flex:1;">
+    <div class="mockup-header" style="background:#1e4060;border-color:#2a5a80;">Proposed</div>
+    <div class="mockup-body" style="background:#0f1218;padding:0;font-family:'Segoe UI',sans-serif;">
+
+      <div style="display:flex;align-items:center;padding:10px 12px;border-bottom:1px solid #1e2535;background:#141720;">
+        <span style="font-size:0.85rem;font-weight:600;color:#c8d0e8;flex:1;">Topics</span>
+        <span style="font-size:0.72rem;color:#4a7fa8;background:#0e2030;border:1px solid #1a4060;border-radius:10px;padding:1px 8px;">2 active</span>
+      </div>
+
+      <!-- Search box -->
+      <div style="padding:8px 10px;border-bottom:1px solid #1e2535;">
+        <div style="display:flex;align-items:center;gap:6px;background:#1a1e2e;border:1px solid #2a3050;border-radius:6px;padding:5px 10px;">
+          <span style="color:#4a5480;font-size:0.85rem;">🔍</span>
+          <span style="font-size:0.8rem;color:#3a4468;">Search topics…</span>
+        </div>
+      </div>
+
+      <div style="padding:8px 10px;display:flex;gap:6px;">
+        <button style="flex:1;font-size:0.8rem;padding:6px 8px;background:#1a3a5a;border:1px solid #2a5a80;border-radius:6px;color:#6ab0d8;font-weight:500;">+ New Topic</button>
+        <button style="font-size:0.8rem;padding:6px 10px;background:#1a1e2e;border:1px solid #2a3050;border-radius:6px;color:#6878a8;">+ Group</button>
+      </div>
+
+      <!-- topic rows — taller & clearer -->
+      <div style="padding:0 8px;display:flex;flex-direction:column;gap:4px;">
+        <div style="font-size:0.68rem;color:#3a4468;text-transform:uppercase;letter-spacing:.1em;padding:4px 4px 2px;">Ungrouped</div>
+        ${[['Virtual Channel','#4db6e8',true],['Platform info','#a78bfa',false],['VDI info','#34d399',false],['In-Meeting CPU','#f59e0b',true],['App CPU','#f87171',false],['UIHang','#60a5fa',false]].map(([name,color,active]) => `
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;background:${active?'#141e2e':'#11141e'};border-radius:6px;border:1px solid ${active?'#1e3a5a':'#1a1e2e'};">
+          <span style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0;box-shadow:0 0 6px ${color}66;"></span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.8rem;color:${active?'#c8d8f0':'#6878a8'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:${active?'500':'400'};">${name}</div>
+          </div>
+          <div style="display:flex;gap:4px;">
+            <button style="width:24px;height:24px;padding:0;font-size:0.8rem;background:none;border:1px solid ${active?'#2a5a80':'#2a3050'};border-radius:4px;color:${active?'#4db6e8':'#3a4468'};">${active?'●':'○'}</button>
+            <button style="width:24px;height:24px;padding:0;font-size:0.8rem;background:none;border:1px solid #2a3050;border-radius:4px;color:#4a5480;">✎</button>
+            <button style="width:24px;height:24px;padding:0;font-size:0.8rem;background:none;border:1px solid #2a3050;border-radius:4px;color:#4a5480;">⋯</button>
+          </div>
+        </div>`).join('')}
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<p style="margin-top:16px;font-size:0.8rem;color:#5a6080;">Key changes: search box, taller rows, glowing color dots, active topics highlighted, delete moved to a ⋯ menu to reduce clutter.</p>

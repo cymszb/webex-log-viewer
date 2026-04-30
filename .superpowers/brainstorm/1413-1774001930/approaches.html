@@ -1,0 +1,66 @@
+<h2>Three Approaches to Multi-User Deployment</h2>
+<p class="subtitle">Shared topics config · Per-user log uploads · Session-cookie isolation</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Server-Side Sessions (Recommended)</h3>
+      <p>Flask server sessions (signed cookies) identify each user. Uploaded log files are stored temporarily on the server (e.g. <code>/tmp/sessions/&lt;session_id&gt;/log.txt</code>), parsed on demand, and cleaned up after a TTL. <code>topics.json</code> remains a shared flat file with a file lock for safe concurrent writes. Drag &amp; drop is removed — all loading goes through upload.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Minimal new dependencies (flask-session or just signed cookies)</li>
+          <li>No database needed</li>
+          <li>Straightforward to deploy (gunicorn + nginx)</li>
+          <li>Clean separation: server owns log data, client owns nothing sensitive</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Large log files consume server disk temporarily</li>
+          <li>Need TTL cleanup job for orphaned sessions</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Keep Client-Side Parsing + Add Upload API</h3>
+      <p>Keep the existing drag-&amp;-drop client-side parser. Add a new <code>POST /api/upload</code> endpoint for server-side upload. Parsed log JSON is stored in the Flask session (in-memory or signed cookie). No files written to disk beyond the existing <code>current_log.txt</code>.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Least disruption to existing frontend</li>
+          <li>No disk usage for uploaded files</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Large logs (100k+ lines) bloat session storage</li>
+          <li>Duplicates parsing logic (Python + JS)</li>
+          <li>Cookie size limits can be a problem</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Full Rewrite with a Proper DB</h3>
+      <p>Replace <code>topics.json</code> with SQLite (or Postgres). Add user sessions table. Store uploaded log chunks in the DB. Full REST API redesign.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Most scalable long-term</li>
+          <li>Concurrent write safety built-in</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Significant rewrite — high risk, slow to deliver</li>
+          <li>Overkill for a small team tool</li>
+          <li>Loses the "no dependencies" simplicity</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:1.5rem">Click an option to select it, then let me know in the terminal.</p>

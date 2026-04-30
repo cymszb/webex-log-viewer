@@ -1,0 +1,292 @@
+{
+  "groups": [
+    {
+      "id": "79cce28c-5ea5-441f-a6b5-2abf2e3e155a",
+      "name": "VDI",
+      "collapsed": false
+    },
+    {
+      "id": "cace67f8-dc64-44bc-98e5-a6b5f0b84a88",
+      "name": "Performance",
+      "collapsed": false
+    }
+  ],
+  "topics": [
+    {
+      "id": "f5db2ed5-ab55-465d-9885-92551d8dc0a9",
+      "name": "Virtual Channel",
+      "pattern": "thin client info|VdiService::initComponent|VdiService::isEnableVDIOnRegistry|VdiService::OnSessionStatusChanged|HealthCheckManager.cpp",
+      "color": "#4db6e8",
+      "enabled": false,
+      "group_id": "79cce28c-5ea5-441f-a6b5-2abf2e3e155a",
+      "events": [
+        {
+          "id": "149bd97b-b1c9-4924-8169-59333b1cac47",
+          "name": "Session",
+          "start_keywords": [
+            "VdiService::OnSessionStatusChangedOnSessionStatusChanged",
+            "status =  1"
+          ],
+          "end_keywords": [
+            "VdiService::OnSessionStatusChangedOnSessionStatusChanged",
+            "status =  0"
+          ],
+          "color": "#4db6e8",
+          "value_regex": ""
+        },
+        {
+          "id": "c0b013b6-a353-4198-a08b-33bc00829cfe",
+          "name": "VirtualChannel",
+          "start_keywords": [
+            "OnVirtualChannelStateChange::OnVirtualChannelStateChange: 1"
+          ],
+          "end_keywords": [
+            "OnVirtualChannelStateChange::OnVirtualChannelStateChange: 0"
+          ],
+          "color": "#4db6e8",
+          "value_regex": ""
+        },
+        {
+          "id": "8b252122-5810-4005-8d74-516b67bc8994",
+          "name": "Hearbeat",
+          "start_keywords": [
+            "onHeartBeatReceived::onHeartBeatReceived:"
+          ],
+          "end_keywords": [],
+          "color": "#9c6fe8",
+          "value_regex": "onHeartBeatReceived::onHeartBeatReceived: ([\\d.]+)"
+        }
+      ]
+    },
+    {
+      "id": "1ae9f271-94cd-4e61-b68f-a87b623b943b",
+      "name": "Platform information",
+      "pattern": "CoreFrameworkImpl::init:CF",
+      "color": "#4db6e8",
+      "enabled": false,
+      "group_id": null,
+      "events": []
+    },
+    {
+      "id": "d9513cbd-7747-45b4-b696-3b7a7060a1c6",
+      "name": "VDI information",
+      "pattern": "VdiService::initComponent|VdiService::isEnableVDIOnRegistry|printVersions::|VdiService::getThinClientInfo",
+      "color": "#4db6e8",
+      "enabled": false,
+      "group_id": "79cce28c-5ea5-441f-a6b5-2abf2e3e155a",
+      "events": []
+    },
+    {
+      "id": "886b6148-9c59-415f-a13d-9599851f7af2",
+      "name": "In-Meeting CPU",
+      "pattern": "onCpuSnapshot",
+      "color": "#e8a24d",
+      "enabled": true,
+      "group_id": "cace67f8-dc64-44bc-98e5-a6b5f0b84a88",
+      "events": [
+        {
+          "id": "c5eebfd8-0ba7-4a2b-8a9f-000dae3c8008",
+          "name": "Main CPU",
+          "start_keywords": [
+            "onCpuSnapshot"
+          ],
+          "end_keywords": [],
+          "value_regex": "MainCPU\\s*:([\\d.]+)",
+          "color": "#5b9bd5"
+        },
+        {
+          "id": "95552f30-00f0-4456-9c74-0bdf75544ca2",
+          "name": "Media CPU",
+          "start_keywords": [
+            "onCpuSnapshot"
+          ],
+          "end_keywords": [],
+          "value_regex": "MediaCPU\\s*:([\\d.]+)",
+          "color": "#e8734d"
+        },
+        {
+          "id": "6ad9e3ef-ff04-4db0-b833-8f2b7beaac9f",
+          "name": "Host CPU",
+          "start_keywords": [
+            "onCpuSnapshot"
+          ],
+          "end_keywords": [],
+          "value_regex": "hostCPU\\s*:([\\d.]+)",
+          "color": "#57c98f"
+        },
+        {
+          "id": "7a786470-1a48-43ba-81f5-0444738a8d31",
+          "name": "Turbo Factor",
+          "start_keywords": [
+            "onCpuSnapshot"
+          ],
+          "end_keywords": [],
+          "value_regex": "TurboFactor\\s*:([\\d.]+)",
+          "color": "#9c6fe8"
+        }
+      ]
+    },
+    {
+      "id": "fd062799-8617-454c-a295-8da610fc6c92",
+      "name": "App CPU",
+      "pattern": "AppMonitor::ActiveListener",
+      "color": "#e84d8a",
+      "enabled": false,
+      "group_id": "cace67f8-dc64-44bc-98e5-a6b5f0b84a88",
+      "events": [
+        {
+          "id": "05fb5d82-5721-44bc-8c0e-89d58ff41302",
+          "name": "Main CPU",
+          "start_keywords": [
+            "onSampleTaken:: process type : main"
+          ],
+          "end_keywords": [],
+          "value_regex": "Process cpu = ([\\d.]+)",
+          "color": "#5b9bd5"
+        },
+        {
+          "id": "a20a91d9-23e6-4e11-82a1-63a011301f06",
+          "name": "Media CPU",
+          "start_keywords": [
+            "onSampleTaken:: process type : media"
+          ],
+          "end_keywords": [],
+          "value_regex": "Process cpu = ([\\d.]+)",
+          "color": "#e8734d"
+        },
+        {
+          "id": "1fb66361-5fb0-4467-89e1-5c9692b3ebe8",
+          "name": "Host CPU",
+          "start_keywords": [
+            "onSampleTaken:: process type : main"
+          ],
+          "end_keywords": [],
+          "value_regex": "Host cpu = ([\\d.]+)",
+          "color": "#57c98f"
+        },
+        {
+          "id": "65eb84ca-c068-4a05-bebb-27cf0e6c4396",
+          "name": "Main Memory (MB)",
+          "start_keywords": [
+            "onSampleTaken:: process type : main"
+          ],
+          "end_keywords": [],
+          "value_regex": "Process private memory\\(mb\\) = ([\\d.]+)",
+          "color": "#9c6fe8"
+        },
+        {
+          "id": "90b73070-5c0e-4086-a636-697efe6fb81e",
+          "name": "Media Memory (MB)",
+          "start_keywords": [
+            "onSampleTaken:: process type : media"
+          ],
+          "end_keywords": [],
+          "value_regex": "Process private memory\\(mb\\) = ([\\d.]+)",
+          "color": "#4db6e8"
+        }
+      ]
+    },
+    {
+      "id": "1c15629c-58bd-4d1c-8724-14d721c36e27",
+      "name": "UIHang",
+      "pattern": "ExternalHangMonitor|UIWatchDog.cpp|AppMonitor.cpp",
+      "color": "#4db6e8",
+      "enabled": false,
+      "group_id": "cace67f8-dc64-44bc-98e5-a6b5f0b84a88",
+      "events": [
+        {
+          "id": "dc9a8471-4bac-49dd-b76c-125ba8cd6166",
+          "name": "UI Hang",
+          "start_keywords": [
+            "hang detected for:"
+          ],
+          "end_keywords": [
+            "hang recovery"
+          ],
+          "value_regex": "",
+          "color": "#e84d9c"
+        },
+        {
+          "id": "2ee24fef-97fb-44ea-bce6-d89a1dea47b7",
+          "name": "Screen Lock",
+          "start_keywords": [
+            "Power event ScreenLocked happened: screen locked"
+          ],
+          "end_keywords": [
+            "Power event ScreenUnlocked happened: screen unlocked"
+          ],
+          "value_regex": "",
+          "color": "#e87d4d"
+        }
+      ]
+    },
+    {
+      "id": "eeb860a7-ff25-43a8-9fe7-c13d6c4c801f",
+      "name": "Call&Meeting",
+      "pattern": "logStateTransitionSuccess::\\[MediaState\\]|logStateTransitionSuccess::\\[CallState\\]",
+      "color": "#4db6e8",
+      "enabled": true,
+      "group_id": null,
+      "events": [
+        {
+          "id": "831370e1-e4c0-46ba-aa5e-dc23d5a8e7f9",
+          "name": "IS Page",
+          "start_keywords": [
+            "logStateTransitionSuccess::[CallState] Transitioned from CallDisconnected to PreviewVideo"
+          ],
+          "end_keywords": [
+            "logStateTransitionSuccess::[CallState] Transitioned from PreviewVideo to ConnectCall"
+          ],
+          "value_regex": "",
+          "color": "#4db6e8"
+        },
+        {
+          "id": "e1415b72-4c55-44ac-af46-b013ee0af899",
+          "name": "Join",
+          "start_keywords": [
+            "logStateTransitionSuccess::[CallState] Transitioned from ConnectCall to JoinCall"
+          ],
+          "end_keywords": [
+            "logStateTransitionSuccess::[CallState] Transitioned from DisconnectCall to DisposeCall"
+          ],
+          "value_regex": "",
+          "color": "#9c6fe8"
+        },
+        {
+          "id": "c0425953-28aa-4554-8fcb-5f15ebf2b074",
+          "name": "Media",
+          "start_keywords": [
+            "logStateTransitionSuccess::[MediaState] Transitioned from MediaConnecting to MediaConnected"
+          ],
+          "end_keywords": [
+            "logStateTransitionSuccess::[MediaState] Transitioned from DisconnectMedia to MediaDisconnected"
+          ],
+          "value_regex": "",
+          "color": "#4de89c"
+        }
+      ]
+    },
+    {
+      "id": "9bcc8168-d02a-426b-86f0-31ad9e0e5347",
+      "name": "Sharing",
+      "pattern": "TelephonyShareManager.cpp",
+      "color": "#4db6e8",
+      "enabled": true,
+      "group_id": null,
+      "events": [
+        {
+          "id": "589917c0-61c3-4a8a-bf4d-4aa0991976e6",
+          "name": "SendShare",
+          "start_keywords": [
+            "Floor granted to self"
+          ],
+          "end_keywords": [
+            "Floor released by participant"
+          ],
+          "value_regex": "",
+          "color": "#4db6e8"
+        }
+      ]
+    }
+  ]
+}
