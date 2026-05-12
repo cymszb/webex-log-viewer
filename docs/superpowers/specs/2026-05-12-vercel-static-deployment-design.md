@@ -75,21 +75,23 @@ webex-log-viewer:log        → not stored — log is in-memory only
 
 ### API Surface
 
+> **Note:** `GET /api/topics` returns a combined `{ groups: [...], topics: [...] }` object. Groups and topics are always read/written together via `getTopics()` — there is no separate `getGroups()` call in the frontend. All group and topic mutations write back the full combined object.
+
 | Flask endpoint | `api.js` function | Backed by |
 |---|---|---|
-| `GET /api/topics` | `getTopics()` | localStorage (seeded on first call) |
+| `GET /api/topics` | `getTopics()` → `{ groups, topics }` | localStorage (seeded on first call) |
 | `POST /api/topics` | `createTopic(topic)` | localStorage |
 | `PUT /api/topics/:id` | `updateTopic(id, topic)` | localStorage |
 | `DELETE /api/topics/:id` | `deleteTopic(id)` | localStorage |
 | `POST /api/topics/:id/events` | `createEvent(topicId, event)` | localStorage |
 | `PUT /api/topics/:id/events/:eid` | `updateEvent(topicId, eventId, event)` | localStorage |
 | `DELETE /api/topics/:id/events/:eid` | `deleteEvent(topicId, eventId)` | localStorage |
-| `GET /api/groups` | `getGroups()` | localStorage |
 | `POST /api/groups` | `createGroup(group)` | localStorage |
 | `PUT /api/groups/:id` | `updateGroup(id, group)` | localStorage |
 | `DELETE /api/groups/:id` | `deleteGroup(id)` | localStorage |
 | `POST /api/upload` | `loadLog(file)` | in-memory (`window._loadedLog`) |
 | `GET /api/logs` | `getLogs()` | in-memory |
+| `DELETE /api/session/log` | *(remove call — not needed)* | `allLogs = []` is sufficient |
 | *(new)* | `exportTopics()` | triggers file download |
 | *(new)* | `importTopics(file)` | replaces localStorage from uploaded file |
 
@@ -128,11 +130,18 @@ Ensures all routes serve `index.html` (SPA-style routing, future-proof).
 ## Changes to `index.html`
 
 1. **Move file:** `templates/index.html` → `index.html` (repo root)
-2. **Add script tag:** `<script src="/static/api.js"></script>` in `<head>`
-3. **Replace fetch calls:** ~15 call sites — all `fetch('/api/topics', ...)` etc. replaced with `await api.getTopics()`, `await api.createTopic(...)`, etc.
-4. **Log upload:** Replace `POST /api/upload` fetch with `FileReader`-based parsing (the client-side `parseLine()` mirror already exists — just wire it up for the upload button, same as drag-and-drop)
-5. **Export/Import buttons:** Add two small buttons to the toolbar — "Export Topics" and "Import Topics"
-6. **Remove Flask-only code:** Remove session polling, server-side error handling paths
+2. **Replace Jinja template variable:** Line ~723 contains `window.MAX_UPLOAD_MB = {{ max_upload_mb }};` — this is a Flask/Jinja2 expression that will break in static HTML. Replace with a hardcoded constant: `window.MAX_UPLOAD_MB = 200;`
+3. **Add script tag:** `<script src="/static/api.js"></script>` in `<head>`
+4. **Replace fetch calls:** ~15 call sites — all `fetch('/api/topics', ...)` etc. replaced with `await api.getTopics()`, `await api.createTopic(...)`, etc.
+5. **Remove `loadLogsFromServer()` startup call:** The `DOMContentLoaded` init block calls both `loadTopics()` and `loadLogsFromServer()`. Remove the `loadLogsFromServer()` call entirely — in the static version, logs start empty on every page load (no server-side persistence).
+6. **Remove `DELETE /api/session/log` call:** In the `btn-clear-log` click handler, remove the `fetch('/api/session/log', { method: 'DELETE' })` call. Only `allLogs = []` is needed.
+7. **Log upload — port `parseLine()` from Python:** The frontend has no existing `parseLine()` function. All log parsing currently happens in `app.py`. Port `parse_line()` (lines 192–239 of `app.py`) into `api.js`. The core regex to replicate is:
+   ```
+   /^(\S+)\s+<(\w+)>\s+\[(\d+):(0x[\da-fA-F]+|\d+)\]\[[^\]]*\]([^\s:]+):(\d+)\s+(.*)/
+   ```
+   Also replicate the `rest.split('::', 2)` logic for splitting class/method from the message. Wire `loadLog(file)` to use `FileReader` + this ported parser, replacing the `POST /api/upload` + `GET /api/logs` round-trip.
+8. **Export/Import buttons:** Add two small buttons to the toolbar — "Export Topics" and "Import Topics"
+9. **Remove Flask-only code:** Remove session polling, server-side error handling paths
 
 ## Deployment Flow
 
