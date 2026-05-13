@@ -1,0 +1,4 @@
+[
+  { "id": "log-viewer",    "label": "Log Viewer",    "src": "index.html",                        "icon": "log"  },
+  { "id": "knowledge-hub", "label": "Knowledge Hub", "src": "upcoming.html?name=Knowledge+Hub",  "icon": "book" }
+]
