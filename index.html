@@ -1259,8 +1259,7 @@ document.getElementById('import-topics-input').addEventListener('change', async 
 
 document.getElementById('btn-load-defaults').addEventListener('click', async () => {
   try {
-    const defaults = await fetch('/topics.json').then(r => r.json());
-    localStorage.setItem('webex-log-viewer:topics', JSON.stringify(defaults));
+    await api.loadDefaultTopics();
     await loadTopics();
     document.getElementById('btn-load-defaults').style.display = 'none';
   } catch {

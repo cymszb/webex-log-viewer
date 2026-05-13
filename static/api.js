@@ -263,10 +263,17 @@
     });
   }
 
+  async function loadDefaultTopics() {
+    const defaults = await fetch('/topics.json').then(r => r.json());
+    writeStore(defaults);
+    return defaults;
+  }
+
   // ── Expose on window ──────────────────────────────────────────────────────
 
   window.api = {
     getTopics,
+    loadDefaultTopics,
     createTopic,
     updateTopic,
     deleteTopic,
