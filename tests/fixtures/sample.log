@@ -1,0 +1,10 @@
+2024-01-15T10:00:00.000Z <INFO> [1234:0x5678][AppModule]main.cpp:42 AppController::init::Starting application
+2024-01-15T10:00:01.100Z <INFO> [1234:0x5679][Core]core.cpp:15 CoreFrameworkImpl::init::CF Initializing core framework
+2024-01-15T10:00:02.200Z <INFO> [1234:0x567a][Network]network.cpp:88 NetworkManager::connect::Connecting to server
+2024-01-15T10:00:03.300Z <ERROR> [1234:0x567b][AppModule]app.cpp:121 AppController::run::Failed to initialize network connection
+2024-01-15T10:00:04.400Z <INFO> [1234:0x567c][Logger]log.cpp:55 LogService::write::Writing log entry
+2024-01-15T10:00:05.500Z <WARNING> [1234:0x567d][Memory]memory.cpp:200 MemoryManager::allocate::Memory usage high
+2024-01-15T10:00:06.600Z <INFO> [1234:0x567e][Crypto]crypto.cpp:73 CryptoEngine::encrypt::Encryption started
+2024-01-15T10:00:07.700Z <ERROR> [1234:0x567f][Security]security.cpp:45 CoreFrameworkImpl::init::CF Security check failed
+2024-01-15T10:00:08.800Z <INFO> [1234:0x5680][Database]db.cpp:112 DatabaseConnection::query::Executing query
+2024-01-15T10:00:09.900Z <INFO> [1234:0x5681][AppModule]main.cpp:98 AppController::shutdown::Application shutdown complete

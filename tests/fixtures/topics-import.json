@@ -1,0 +1,13 @@
+{
+  "groups": [],
+  "topics": [
+    {
+      "id": "test-topic-1",
+      "name": "Test Topic",
+      "pattern": "TestPattern",
+      "color": "#ff0000",
+      "enabled": true,
+      "events": []
+    }
+  ]
+}
