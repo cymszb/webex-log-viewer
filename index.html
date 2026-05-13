@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    // Redirect to shell if opened as top-level page (not inside iframe)
+    if (window.self === window.top) {
+      location.replace('shell.html?tool=log-viewer');
+    }
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Webex Log Viewer</title>
