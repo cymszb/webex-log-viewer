@@ -10,10 +10,9 @@ test.describe('Smoke tests', () => {
 
   test('Page loads', async ({ page }) => {
     const consoleErrors = [];
-    page.on('console', msg => {
-      if (msg.type() === 'error') consoleErrors.push(msg.text());
-    });
-
+    page.on('console', msg => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+    await page.goto('/');
+    await page.waitForSelector('#topic-list', { state: 'visible' });
     await expect(page).toHaveTitle('Webex Log Viewer');
     expect(consoleErrors).toHaveLength(0);
   });

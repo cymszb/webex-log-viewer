@@ -7,7 +7,7 @@ async function createTopic(page, name, regex) {
   await page.fill('#modal-name-input', name);
   await page.waitForSelector('#btn-modal-save:not([disabled])');
   await page.click('#btn-modal-save');
-  await page.waitForSelector(`#topic-list .topic-name >> text=${name}`);
+  await expect(page.locator('#topic-list .topic-name', { hasText: name })).toBeVisible();
 }
 
 test.describe('Topic CRUD', () => {
@@ -19,13 +19,8 @@ test.describe('Topic CRUD', () => {
   });
 
   test('Create topic', async ({ page }) => {
-    await page.click('#btn-new-topic');
-    await page.waitForSelector('#modal-name-input', { state: 'visible' });
-    await page.fill('#modal-regex-input', 'TestRegex');
-    await page.fill('#modal-name-input', 'My Test Topic');
-    await page.waitForSelector('#btn-modal-save:not([disabled])');
-    await page.click('#btn-modal-save');
-    await expect(page.locator('#topic-list')).toContainText('My Test Topic');
+    await createTopic(page, 'My Test Topic', 'TestRegex');
+    await expect(page.locator('#topic-list .topic-name', { hasText: 'My Test Topic' })).toBeVisible();
   });
 
   test('Edit topic', async ({ page }) => {

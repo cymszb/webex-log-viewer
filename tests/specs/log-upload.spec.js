@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const path = require('path');
 
-const fixturePath = path.join(__dirname, '../fixtures/sample.log');
+const fixturePath = path.join(__dirname, '../fixtures/sample.txt');
 
 test.describe('Log upload + filtering', () => {
   test.beforeEach(async ({ page }) => {
@@ -12,6 +12,8 @@ test.describe('Log upload + filtering', () => {
     // Disable all topics so they don't filter out log rows
     await page.evaluate(() => {
       topicsState.forEach(t => { t.enabled = false; });
+      applyFilters();
+      renderTopicList();
     });
   });
 
