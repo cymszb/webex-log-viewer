@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coming Soon</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0d14;
+      color: #d4d8e1;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+    h1 { font-size: 22px; font-weight: 600; color: #a0b8d8; }
+    p  { font-size: 14px; color: #5a6080; }
+  </style>
+</head>
+<body>
+  <script>
+    // Redirect to shell if loaded as top-level document (not inside iframe)
+    if (window.self === window.top) {
+      const params = new URLSearchParams(location.search);
+      // Find the matching tool by label, fall back to first tool
+      fetch('tools.json')
+        .then(r => r.json())
+        .then(tools => {
+          const name = params.get('name') || '';
+          const match = tools.find(t => t.label === name) || tools[0];
+          location.replace('shell.html?tool=' + match.id);
+        })
+        .catch(() => location.replace('shell.html'));
+    }
+  </script>
+  <h1 id="tool-name">Coming Soon</h1>
+  <p>This tool is not yet available.</p>
+  <script>
+    const n = new URLSearchParams(location.search).get('name');
+    if (n) document.getElementById('tool-name').textContent = n;
+  </script>
+</body>
+</html>
