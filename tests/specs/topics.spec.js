@@ -4,6 +4,8 @@ async function createTopic(page, name, regex) {
   await page.click('#btn-new-topic');
   await page.waitForSelector('#modal-name-input', { state: 'visible' });
   await page.fill('#modal-regex-input', regex);
+  // Wait for debounced regex validation (300ms) to mark field valid before typing name
+  await page.waitForSelector('#modal-regex-feedback.valid');
   await page.fill('#modal-name-input', name);
   await page.waitForSelector('#btn-modal-save:not([disabled])');
   await page.click('#btn-modal-save');

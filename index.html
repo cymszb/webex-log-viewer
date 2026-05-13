@@ -512,12 +512,7 @@
     /* Topic row highlight: strong left border + vivid background */
     tr.topic-match td:first-child { border-left-width: 4px !important; border-left-style: solid !important; }
     tr.topic-match { background-color: var(--topic-bg, rgba(77,182,232,0.18)) !important; }
-    .sidebar-nav-btns { display: flex; gap: 4px; margin-bottom: 4px; }
-    .sidebar-nav-btns button {
-      flex: 1; font-size: 0.72rem; padding: 4px 4px;
-      background: var(--bg-elevated); border: 1px solid var(--border-input); color: var(--text-secondary);
-    }
-    #topic-nav-indicator { color: #2a3458; font-size: 0.7rem; }
+
     .topic-filter-row { display: flex; align-items: center; gap: 6px; padding: 4px 0; font-size: 0.75rem; color: #8090b8; cursor: pointer; user-select: none; }
     .topic-filter-row input { cursor: pointer; }
     /* Groups */
@@ -709,16 +704,25 @@
     }
     #tl-placeholder { font-size: 0.78rem; color: #3e4460; text-align: center; padding: 20px; }
     .sidebar-footer {
-      flex-shrink: 0; padding: 6px 8px;
+      flex-shrink: 0;
       border-top: 1px solid var(--border-subtle); background: var(--bg-sidebar);
     }
-    #btn-toggle-timeline {
-      width: 100%; font-size: 0.78rem; padding: 6px 10px;
-      background: linear-gradient(135deg, #1e3a5f, #1a3050);
-      border: 1px solid #2a5080; color: #7ab8e0; font-weight: 500;
+    #tl-drag-handle {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      padding: 6px 8px; cursor: grab; user-select: none;
+      color: #4a6080; font-size: 0.72rem;
+      transition: background 0.15s, color 0.15s;
     }
-    #btn-toggle-timeline:hover { background: linear-gradient(135deg, #224268, #1d3858); color: #a0c8e8; }
-    #btn-toggle-timeline.active { background: linear-gradient(135deg, #1e3a5f, #1a3050); border-color: var(--accent-blue); color: var(--accent-blue); }
+    #tl-drag-handle:hover, #tl-drag-handle.active {
+      background: rgba(91,155,213,0.1); color: #7ab8e0;
+    }
+    #tl-drag-handle .tl-grip {
+      display: flex; gap: 3px;
+    }
+    #tl-drag-handle .tl-grip span {
+      display: block; width: 3px; height: 3px; border-radius: 50%;
+      background: currentColor; opacity: 0.6;
+    }
   </style>
   <script>window.MAX_UPLOAD_MB = 200;</script>
   <script src="/static/api.js"></script>
@@ -746,12 +750,6 @@
   </div>
   <span id="upload-status">No log loaded</span>
   <button id="btn-clear-log" disabled title="Clear the loaded log">&#10005; Clear Log</button>
-  <button id="btn-export-topics" title="Export topics to topics.json">&#8659; Export Topics</button>
-  <label id="btn-import-topics-label" title="Import topics from topics.json" style="cursor:pointer">
-    &#8657; Import Topics
-    <input type="file" id="import-topics-input" accept=".json" style="display:none" />
-  </label>
-  <button id="btn-load-defaults" style="display:none" title="Load default team topics">&#8635; Load Defaults</button>
 
   <!-- Level filters -->
   <span class="toolbar-label">Level</span>
@@ -878,15 +876,21 @@
           <button id="btn-new-group-confirm" class="primary">OK</button>
           <button id="btn-new-group-cancel">✕</button>
         </div>
-        <div class="sidebar-nav-btns">
-          <button id="btn-prev-topic">&#8593; Prev Match</button>
-          <button id="btn-next-topic">&#8595; Next Match</button>
+        <div style="display:flex;gap:4px;padding:4px 0;">
+          <button id="btn-export-topics" title="Export topics to topics.json" style="flex:1;font-size:0.75rem;padding:4px 6px;">&#8659; Export</button>
+          <label id="btn-import-topics-label" title="Import topics from topics.json" style="flex:1;cursor:pointer;font-size:0.75rem;padding:4px 6px;text-align:center;background:var(--bg-elevated);border:1px solid var(--border-input);border-radius:4px;color:var(--text-secondary);">
+            &#8657; Import
+            <input type="file" id="import-topics-input" accept=".json" style="display:none" />
+          </label>
+          <button id="btn-load-defaults" style="display:none;flex:1;font-size:0.75rem;padding:4px 6px;" title="Load default team topics">&#8635; Defaults</button>
         </div>
-        <div id="topic-nav-indicator" style="font-size:0.7rem;color:#5a8090;min-height:1.2em;padding:2px 0;"></div>
         <div id="topic-list"></div>
       </div>
       <div class="sidebar-footer">
-        <button id="btn-toggle-timeline" title="Toggle Topic Visualization timeline">&#9202; Events</button>
+        <div id="tl-drag-handle" title="Drag up to show Topic Visualization">
+          <div class="tl-grip"><span></span><span></span><span></span><span></span><span></span></div>
+          <span>&#9202; Topic Visualization</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1040,7 +1044,7 @@ function applyFilters() {
       searchRx = new RegExp(search, 'i');
     } catch {
       filteredLogs = [];
-      errorJumpIdx = -1; topicJumpIdx = -1; currentPage = 1;
+      errorJumpIdx = -1; currentPage = 1;
       updateStats(); renderPage(1);
       return;
     }
@@ -1072,7 +1076,6 @@ function applyFilters() {
   });
 
   errorJumpIdx = -1;
-  topicJumpIdx = -1;
   currentPage = 1;
   updateStats();
   renderPage(1);
@@ -1323,7 +1326,6 @@ document.getElementById('per-page-sel').addEventListener('change', e => {
 });
 
 // ── Topics ─────────────────────────────────────────────────────────────────────────
-let topicJumpIdx = -1;
 let groupsState = [];          // [{id, name, collapsed}]
 let draggedTopicId = null;     // id of topic being dragged
 // Timeline state
@@ -1339,32 +1341,6 @@ function getCompiledTopics() {
 function getRowTopics(log, compiledTopics) {
   const haystack = log.message + ' ' + log.class_method + ' ' + log.source_file;
   return compiledTopics.filter(t => t.re.test(haystack));
-}
-
-function jumpToTopic(direction) {
-  const compiledTopics = getCompiledTopics();
-  if (compiledTopics.length === 0) {
-    document.getElementById('topic-nav-indicator').textContent = 'No active topics';
-    return;
-  }
-  const matchIndices = filteredLogs
-    .map((l, i) => getRowTopics(l, compiledTopics).length > 0 ? i : -1)
-    .filter(i => i >= 0);
-  if (matchIndices.length === 0) {
-    document.getElementById('topic-nav-indicator').textContent = 'No matches in loaded logs';
-    return;
-  }
-  topicJumpIdx += direction;
-  if (topicJumpIdx < 0) topicJumpIdx = matchIndices.length - 1;
-  if (topicJumpIdx >= matchIndices.length) topicJumpIdx = 0;
-  const filteredIdx = matchIndices[topicJumpIdx];
-  const targetPage = Math.floor(filteredIdx / perPage) + 1;
-  renderPage(targetPage);
-  document.getElementById('topic-nav-indicator').textContent =
-    `Match ${topicJumpIdx + 1} / ${matchIndices.length}`;
-  const posInPage = filteredIdx % perPage;
-  const rows = document.querySelectorAll('#log-body tr');
-  if (rows[posInPage]) rows[posInPage].scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 async function loadTopics() {
@@ -2394,14 +2370,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ── Topic navigation wiring ───────────────────────────────────────────────
-  document.getElementById('btn-next-topic').addEventListener('click', () => jumpToTopic(+1));
-  document.getElementById('btn-prev-topic').addEventListener('click', () => jumpToTopic(-1));
   document.getElementById('topic-search-input').addEventListener('input', () => {
     renderTopicList();
   });
 
-  // ── Timeline resize handle ────────────────────────────────────────────────
+  // ── Timeline resize handle (inside panel, for height adjust once open) ────
   (function() {
     const handle = document.getElementById('tl-resize-handle');
     if (!handle) return;
@@ -2427,29 +2400,65 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
-  // ── Timeline toggle button wiring ─────────────────────────────────────────
-  document.getElementById('btn-toggle-timeline').addEventListener('click', () => {
+  // ── Sidebar drag handle — drag up to reveal / resize timeline ────────────
+  (function() {
+    const dragHandle = document.getElementById('tl-drag-handle');
     const panel = document.getElementById('timeline-panel');
-    const btn = document.getElementById('btn-toggle-timeline');
-    if (panel.style.display === 'none') {
+    if (!dragHandle || !panel) return;
+
+    function openPanel() {
       panel.style.display = '';
-      btn.classList.add('active');
+      dragHandle.classList.add('active');
       renderTimeline();
-      // ResizeObserver for redraw on width change
       if (!tlState._observer) {
         tlState._observer = new ResizeObserver(() => renderTimeline());
         tlState._observer.observe(document.getElementById('tl-rows-container'));
       }
-    } else {
-      panel.style.display = 'none';
-      btn.classList.remove('active');
     }
-  });
-  const _tlClose = document.getElementById('btn-tl-close');
-  if (_tlClose) _tlClose.addEventListener('click', () => {
-    document.getElementById('timeline-panel').style.display = 'none';
-    document.getElementById('btn-toggle-timeline').classList.remove('active');
-  });
+    function closePanel() {
+      panel.style.display = 'none';
+      dragHandle.classList.remove('active');
+    }
+
+    let startY, startH, didDrag;
+    dragHandle.addEventListener('mousedown', e => {
+      e.preventDefault();
+      startY = e.clientY;
+      startH = panel.style.display === 'none' ? 0 : document.getElementById('timeline-body').offsetHeight;
+      didDrag = false;
+
+      const onMove = ev => {
+        const delta = startY - ev.clientY; // drag up = positive
+        if (!didDrag && Math.abs(delta) < 4) return;
+        didDrag = true;
+        dragHandle.style.cursor = 'grabbing';
+        const newH = Math.max(0, Math.min(window.innerHeight * 0.7, startH + delta));
+        if (newH > 10) {
+          if (panel.style.display === 'none') openPanel();
+          document.getElementById('timeline-body').style.height = newH + 'px';
+        } else {
+          closePanel();
+        }
+      };
+      const onUp = () => {
+        dragHandle.style.cursor = '';
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        // If barely moved, treat as a click toggle
+        if (!didDrag) {
+          panel.style.display === 'none' ? openPanel() : closePanel();
+        } else {
+          renderTimeline();
+        }
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+
+    // Close button inside the panel
+    const closeBtn = document.getElementById('btn-tl-close');
+    if (closeBtn) closeBtn.addEventListener('click', closePanel);
+  })();
 
   // Regex toggle
   document.getElementById('btn-regex-toggle').addEventListener('click', () => {

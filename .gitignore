@@ -17,3 +17,9 @@ sessions/
 # Research notes (not part of the project)
 CLAUDE_SDK_ANALYSIS.md
 CLAUDE_SDK_DETAILED_ANALYSIS.md
+
+# Playwright
+node_modules/
+playwright-report/
+test-results/
+.playwright-mcp/
