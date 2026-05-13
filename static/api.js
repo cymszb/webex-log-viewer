@@ -11,8 +11,14 @@
     try {
       const raw = localStorage.getItem(TOPICS_KEY);
       if (!raw) return null;
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') return parsed;
+      return null;
     } catch { return null; }
+  }
+
+  function readStoreOrEmpty() {
+    return readStore() || { groups: [], topics: [] };
   }
 
   function writeStore(data) {
@@ -74,7 +80,7 @@
   }
 
   async function createTopic(topic) {
-    const data = readStore();
+    const data = readStoreOrEmpty();
     const newTopic = { ...topic, id: generateId(), events: topic.events || [] };
     data.topics.push(newTopic);
     writeStore(data);
@@ -82,7 +88,7 @@
   }
 
   async function updateTopic(id, topic) {
-    const data = readStore();
+    const data = readStoreOrEmpty();
     const idx = data.topics.findIndex(t => t.id === id);
     if (idx === -1) throw new Error('Topic not found: ' + id);
     data.topics[idx] = { ...data.topics[idx], ...topic };
@@ -91,7 +97,7 @@
   }
 
   async function deleteTopic(id) {
-    const data = readStore();
+    const data = readStoreOrEmpty();
     data.topics = data.topics.filter(t => t.id !== id);
     writeStore(data);
   }
@@ -99,7 +105,7 @@
   // ── Events ────────────────────────────────────────────────────────────────
 
   async function createEvent(topicId, event) {
-    const data = readStore();
+    const data = readStoreOrEmpty();
     const topic = data.topics.find(t => t.id === topicId);
     if (!topic) throw new Error('Topic not found: ' + topicId);
     if (!topic.events) topic.events = [];
@@ -110,7 +116,7 @@
   }
 
   async function updateEvent(topicId, eventId, event) {
-    const data = readStore();
+    const data = readStoreOrEmpty();
     const topic = data.topics.find(t => t.id === topicId);
     if (!topic) throw new Error('Topic not found: ' + topicId);
     const idx = (topic.events || []).findIndex(e => e.id === eventId);
@@ -121,7 +127,7 @@
   }
 
   async function deleteEvent(topicId, eventId) {
-    const data = readStore();
+    const data = readStoreOrEmpty();
     const topic = data.topics.find(t => t.id === topicId);
     if (!topic) throw new Error('Topic not found: ' + topicId);
     topic.events = (topic.events || []).filter(e => e.id !== eventId);
@@ -131,7 +137,7 @@
   // ── Groups ────────────────────────────────────────────────────────────────
 
   async function createGroup(group) {
-    const data = readStore();
+    const data = readStoreOrEmpty();
     const newGroup = { ...group, id: generateId() };
     if (!data.groups) data.groups = [];
     data.groups.push(newGroup);
@@ -140,7 +146,7 @@
   }
 
   async function updateGroup(id, group) {
-    const data = readStore();
+    const data = readStoreOrEmpty();
     const idx = (data.groups || []).findIndex(g => g.id === id);
     if (idx === -1) throw new Error('Group not found: ' + id);
     data.groups[idx] = { ...data.groups[idx], ...group };
@@ -149,7 +155,7 @@
   }
 
   async function deleteGroup(id) {
-    const data = readStore();
+    const data = readStoreOrEmpty();
     data.groups = (data.groups || []).filter(g => g.id !== id);
     writeStore(data);
   }
@@ -233,7 +239,9 @@
     const a = document.createElement('a');
     a.href = url;
     a.download = 'topics.json';
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
 
