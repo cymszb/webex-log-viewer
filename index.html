@@ -746,6 +746,12 @@
   </div>
   <span id="upload-status">No log loaded</span>
   <button id="btn-clear-log" disabled title="Clear the loaded log">&#10005; Clear Log</button>
+  <button id="btn-export-topics" title="Export topics to topics.json">&#8659; Export Topics</button>
+  <label id="btn-import-topics-label" title="Import topics from topics.json" style="cursor:pointer">
+    &#8657; Import Topics
+    <input type="file" id="import-topics-input" accept=".json" style="display:none" />
+  </label>
+  <button id="btn-load-defaults" style="display:none" title="Load default team topics">&#8635; Load Defaults</button>
 
   <!-- Level filters -->
   <span class="toolbar-label">Level</span>
@@ -1232,6 +1238,34 @@ document.getElementById('btn-clear-log').addEventListener('click', () => {
   applyFilters();
   setUploadStatus('No log loaded');
   setClearLogEnabled(false);
+});
+
+document.getElementById('btn-export-topics').addEventListener('click', () => {
+  api.exportTopics();
+});
+
+document.getElementById('import-topics-input').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    await api.importTopics(file);
+    await loadTopics();
+    setUploadStatus('Topics imported successfully.', 'success');
+  } catch (err) {
+    alert('Failed to import topics: ' + err.message);
+  }
+  e.target.value = '';
+});
+
+document.getElementById('btn-load-defaults').addEventListener('click', async () => {
+  try {
+    const defaults = await fetch('/topics.json').then(r => r.json());
+    localStorage.setItem('webex-log-viewer:topics', JSON.stringify(defaults));
+    await loadTopics();
+    document.getElementById('btn-load-defaults').style.display = 'none';
+  } catch {
+    alert('Could not load defaults. Make sure you are accessing the app over HTTP (not file://).');
+  }
 });
 
 // Filter inputs — debounced
