@@ -1627,10 +1627,11 @@ async function saveTopicModal() {
   const group_id = document.getElementById('modal-group-select').value || null;
   const body = { name, pattern, color: modalSelectedColor, group_id };
   try {
-    const url = editingTopicId ? '/api/topics/' + editingTopicId : '/api/topics';
-    const method = editingTopicId ? 'PUT' : 'POST';
-    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (!res.ok) { const d = await res.json(); alert('Error: ' + (d.error || 'Unknown')); return; }
+    if (editingTopicId) {
+      await api.updateTopic(editingTopicId, body);
+    } else {
+      await api.createTopic(body);
+    }
     closeTopicModal();
     await loadTopics();
   } catch (e) { alert('Network error: ' + e.message); }
@@ -1731,10 +1732,11 @@ function openModalEventForm(topic, event = null) {
     const value_regex    = document.getElementById('modal-event-value-regex-input').value.trim();
     if (!name) return;
     const body = { name, start_keywords, end_keywords, value_regex, color: evColor };
-    const url = eid ? `/api/topics/${editingTopicId}/events/${eid}` : `/api/topics/${editingTopicId}/events`;
-    const method = eid ? 'PUT' : 'POST';
-    const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
-    if (!res.ok) { const d = await res.json(); alert('Error: ' + (d.error||'Unknown')); return; }
+    if (eid) {
+      await api.updateEvent(editingTopicId, eid, body);
+    } else {
+      await api.createEvent(editingTopicId, body);
+    }
     form.remove();
     await loadTopics();
     // Re-open modal for same topic
@@ -1754,7 +1756,7 @@ function openModalEventForm(topic, event = null) {
 
 async function deleteModalEvent(topicId, eventId) {
   if (!confirm('Delete this event?')) return;
-  await fetch(`/api/topics/${topicId}/events/${eventId}`, { method: 'DELETE' });
+  await api.deleteEvent(topicId, eventId);
   await loadTopics();
   const updated = topicsState.find(t => t.id === topicId);
   if (updated) { editingTopicId = updated.id; renderModalEventsList(updated); }
@@ -1773,12 +1775,7 @@ async function copyModalEvent(topicId, eventId) {
       value_regex:    ev.value_regex || '',
       color:          ev.color || ''
     };
-    const res = await fetch(`/api/topics/${topicId}/events`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) { const d = await res.json(); alert('Error copying event: ' + (d.error || 'Unknown')); return; }
+    await api.createEvent(topicId, body);
     await loadTopics();
     const updated = topicsState.find(t => t.id === topicId);
     // Do NOT reassign editingTopicId — it is already correct for this modal session
@@ -1788,18 +1785,14 @@ async function copyModalEvent(topicId, eventId) {
 
 async function deleteTopic(id) {
   if (!confirm('Delete this topic?')) return;
-  await fetch('/api/topics/' + id, { method: 'DELETE' });
+  await api.deleteTopic(id);
   await loadTopics();
 }
 
 async function toggleTopic(id) {
   const topic = topicsState.find(t => t.id === id);
   if (!topic) return;
-  await fetch('/api/topics/' + id, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ enabled: !topic.enabled })
-  });
+  await api.updateTopic(id, { enabled: !topic.enabled });
   await loadTopics();
 }
 
@@ -2198,8 +2191,7 @@ function onTlClick(e, canvas, ev) {
 async function toggleGroupCollapse(gid) {
   const g = groupsState.find(x => x.id === gid);
   if (!g) return;
-  await fetch('/api/groups/' + gid, { method: 'PUT', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ collapsed: !g.collapsed }) });
+  await api.updateGroup(gid, { collapsed: !g.collapsed });
   await loadTopics();
 }
 
@@ -2208,8 +2200,7 @@ async function toggleGroupEnabled(gid) {
   const allEnabled = members.length > 0 && members.every(t => t.enabled);
   const newState = !allEnabled;
   await Promise.all(members.map(t =>
-    fetch('/api/topics/' + t.id, { method: 'PUT', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ enabled: newState }) })
+    api.updateTopic(t.id, { enabled: newState })
   ));
   await loadTopics();
 }
@@ -2226,8 +2217,7 @@ function startRenameGroup(gid) {
   const commit = async () => {
     const newName = input.value.trim();
     if (newName && newName !== g.name) {
-      await fetch('/api/groups/' + gid, { method: 'PUT', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ name: newName }) });
+      await api.updateGroup(gid, { name: newName });
       await loadTopics();
     } else {
       input.replaceWith(span);
@@ -2244,7 +2234,7 @@ async function deleteGroup(gid) {
     ? `Delete group "${g.name}"? Its ${memberCount} topic(s) will become ungrouped.`
     : `Delete group "${g.name}"?`;
   if (!confirm(msg)) return;
-  await fetch('/api/groups/' + gid, { method: 'DELETE' });
+  await api.deleteGroup(gid);
   await loadTopics();
 }
 
@@ -2259,14 +2249,14 @@ function onGroupDragOver(e, targetGroupId) {
   if (el) el.classList.add('drag-over');
 }
 
-function onGroupDrop(e, targetGroupId) {
+async function onGroupDrop(e, targetGroupId) {
   e.preventDefault(); e.stopPropagation();
   document.querySelectorAll('.group-header, .group-topics').forEach(el => el.classList.remove('drag-over'));
   if (!draggedTopicId) return;
   const gid = targetGroupId || null;
-  fetch('/api/topics/' + draggedTopicId, { method: 'PUT',
-    headers: {'Content-Type':'application/json'}, body: JSON.stringify({ group_id: gid }) })
-    .then(() => loadTopics());
+  const body = { group_id: gid };
+  await api.updateTopic(draggedTopicId, body);
+  await loadTopics();
 }
 
 function onDragLeave(e) {
@@ -2288,9 +2278,8 @@ async function confirmNewGroup() {
   const name = document.getElementById('new-group-input').value.trim();
   if (!name) return;
   document.getElementById('new-group-form').style.display = 'none';
-  const res = await fetch('/api/groups', { method: 'POST',
-    headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name }) });
-  if (res.ok) await loadTopics();
+  await api.createGroup({ name, collapsed: false });
+  await loadTopics();
 }
 document.getElementById('btn-new-group-confirm').addEventListener('click', confirmNewGroup);
 document.getElementById('new-group-input').addEventListener('keydown', e => {
