@@ -1379,15 +1379,9 @@ function jumpToTopic(direction) {
 
 async function loadTopics() {
   try {
-    const res = await fetch('/api/topics');
-    const data = await res.json();
-    if (Array.isArray(data)) {
-      topicsState = data;
-      groupsState = [];
-    } else {
-      topicsState = data.topics || [];
-      groupsState = data.groups || [];
-    }
+    const data = await api.getTopics();
+    topicsState = data.topics || [];
+    groupsState = data.groups || [];
   } catch { topicsState = []; groupsState = []; }
   renderTopicList();
   updateStats();
