@@ -965,74 +965,32 @@ function setClearLogEnabled(enabled) {
   document.getElementById('btn-clear-log').disabled = !enabled;
 }
 
-async function loadLogsFromServer() {
-  try {
-    const res = await fetch('/api/logs');
-    const data = await res.json();
-    if (!res.ok || data.error === 'no_log') {
-      allLogs = [];
-      applyFilters();
-      setUploadStatus('No log loaded');
-      setClearLogEnabled(false);
-      return;
-    }
-    if (data.error) {
-      setUploadStatus('Failed to load log. Please try again.', 'error');
-      return;
-    }
-    allLogs = data.logs;
-    applyFilters();
-    setUploadStatus('✓ ' + allLogs.length.toLocaleString() + ' lines loaded', 'success');
-    setClearLogEnabled(true);
-  } catch (e) {
-    setUploadStatus('Failed to load log. Please try again.', 'error');
-  }
-}
-
-function uploadFile(file) {
+async function uploadFile(file) {
   const maxMb = window.MAX_UPLOAD_MB || 200;
   if (file.size > maxMb * 1024 * 1024) {
     setUploadStatus('File too large. Maximum is ' + maxMb + ' MB.', 'error');
     return;
   }
-  const formData = new FormData();
-  formData.append('log', file);
-
   setProgressVisible(true);
   setProgress(0, '0%');
-  setUploadStatus('Uploading…');
+  setUploadStatus('Parsing…');
   setClearLogEnabled(false);
 
-  const xhr = new XMLHttpRequest();
-  xhr.timeout = 120000;
-
-  xhr.upload.onprogress = e => {
-    if (e.lengthComputable) {
-      const pct = Math.round((e.loaded / e.total) * 100);
-      setProgress(pct, pct < 100 ? pct + '%' : 'Processing…');
-    }
-  };
-
-  xhr.onload = async () => {
+  try {
+    // Show fake progress while FileReader works (no real progress events for readAsText)
+    setProgress(50, '50%');
+    const result = await api.loadLog(file);
+    setProgress(100, '100%');
     setProgressVisible(false);
-    if (xhr.status === 200) {
-      await loadLogsFromServer();
-    } else if (xhr.status === 413) {
-      setUploadStatus('File too large. Maximum is ' + maxMb + ' MB.', 'error');
-    } else if (xhr.status === 400) {
-      setUploadStatus('Please upload a .txt log file.', 'error');
-    } else if (xhr.status === 503) {
-      setUploadStatus('Server is at capacity. Please try again later.', 'error');
-    } else {
-      setUploadStatus('Upload failed. Please try again.', 'error');
-    }
-  };
-
-  xhr.onerror = () => { setProgressVisible(false); setUploadStatus('Upload failed. Please try again.', 'error'); };
-  xhr.ontimeout = () => { setProgressVisible(false); setUploadStatus('Upload timed out. Please try again.', 'error'); };
-
-  xhr.open('POST', '/api/upload');
-  xhr.send(formData);
+    const data = await api.getLogs();
+    allLogs = data.logs;
+    applyFilters();
+    setUploadStatus('✓ ' + allLogs.length.toLocaleString() + ' lines loaded', 'success');
+    setClearLogEnabled(true);
+  } catch (e) {
+    setProgressVisible(false);
+    setUploadStatus('Failed to parse log. Please try again.', 'error');
+  }
 }
 
 // ── Stats ────────────────────────────────────────────────────────────────
@@ -1269,8 +1227,7 @@ document.getElementById('file-input').addEventListener('change', e => {
   e.target.value = '';
 });
 
-document.getElementById('btn-clear-log').addEventListener('click', async () => {
-  await fetch('/api/session/log', { method: 'DELETE' });
+document.getElementById('btn-clear-log').addEventListener('click', () => {
   allLogs = [];
   applyFilters();
   setUploadStatus('No log loaded');
@@ -2482,7 +2439,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (localStorage.getItem('topicsSidebarCollapsed') === '1') collapseSidebar();
   loadTopics();
   renderPage(1);  // show empty state initially
-  loadLogsFromServer();
 });
 </script>
 </body>
