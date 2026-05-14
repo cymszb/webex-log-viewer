@@ -59,6 +59,22 @@ export function useHubState() {
       });
   }, []);
 
+  // Listen for browser back/forward
+  useEffect(() => {
+    const onHashChange = () => {
+      const hash = parseHash();
+      setState(s => ({
+        ...s,
+        topicId: hash.topicId || s.topicId,
+        fileSlug: hash.fileSlug || s.fileSlug,
+        lang: hash.lang,
+        expandedTopics: new Set(hash.topicId ? [...s.expandedTopics, hash.topicId] : s.expandedTopics)
+      }));
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
   // Update hash when state changes
   useEffect(() => {
     if (state.topicId && state.fileSlug) {

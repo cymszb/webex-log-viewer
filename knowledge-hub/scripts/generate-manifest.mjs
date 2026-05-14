@@ -3,8 +3,8 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CONTENT_DIR = join(__dirname, '..', 'src', 'content');
-const OUT_DIR = join(__dirname, '..', 'src', 'data');
+const CONTENT_DIR = join(__dirname, '..', 'public', 'content');
+const OUT_DIR = join(__dirname, '..', 'public', 'data');
 const OUT_FILE = join(OUT_DIR, 'topics.json');
 
 async function scan(dir) {

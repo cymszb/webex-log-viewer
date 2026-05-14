@@ -17,13 +17,15 @@ export function ContentArea({ currentTopic, currentFile, lang, onSetLang }: Cont
 
   useEffect(() => {
     if (!currentTopic || !currentFile) return;
+    let ignore = false;
     setLoading(true);
     const filePath = `./content/${currentTopic.id}/${currentFile.slug}.${lang}.md`;
     fetch(filePath)
       .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
-      .then(text => setContent(text))
-      .catch(() => setContent('*Content not available in this language.*'))
-      .finally(() => setLoading(false));
+      .then(text => { if (!ignore) setContent(text); })
+      .catch(() => { if (!ignore) setContent('*Content not available in this language.*'); })
+      .finally(() => { if (!ignore) setLoading(false); });
+    return () => { ignore = true; };
   }, [currentTopic, currentFile, lang]);
 
   if (!currentTopic || !currentFile) {

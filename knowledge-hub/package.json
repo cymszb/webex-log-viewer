@@ -4,10 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/generate-manifest.mjs && vite",
     "prebuild": "node scripts/generate-manifest.mjs",
     "build": "vite build",
-    "postbuild": "node -e \"const{cpSync}=require('fs');cpSync('src/content','dist/content',{recursive:true});cpSync('src/data','dist/data',{recursive:true})\"",
     "preview": "vite preview",
     "test": "vitest run"
   },
