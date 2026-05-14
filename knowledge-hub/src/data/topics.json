@@ -1,0 +1,23 @@
+[
+  {
+    "id": "getting-started",
+    "name": "Getting Started",
+    "files": [
+      {
+        "name": "Installation",
+        "slug": "installation",
+        "languages": [
+          "en"
+        ]
+      },
+      {
+        "name": "Overview",
+        "slug": "overview",
+        "languages": [
+          "en",
+          "zh"
+        ]
+      }
+    ]
+  }
+]
