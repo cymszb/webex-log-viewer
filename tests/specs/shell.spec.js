@@ -15,10 +15,11 @@ test.describe('Shell', () => {
     await expect(active).toHaveAttribute('aria-label', 'Log Viewer');
   });
 
-  test('switching to Knowledge Hub loads upcoming page', async ({ page }) => {
+  test('switching to Knowledge Hub loads the React app', async ({ page }) => {
     await page.locator('#nav-rail .nav-item[aria-label="Knowledge Hub"]').click();
     const frame = page.frameLocator('#tool-frame');
-    await expect(frame.locator('#tool-name')).toHaveText('Knowledge Hub');
+    // The knowledge hub renders a sidebar with topic navigation
+    await expect(frame.locator('aside')).toBeVisible({ timeout: 10000 });
   });
 
   test('URL updates when switching tools', async ({ page }) => {
