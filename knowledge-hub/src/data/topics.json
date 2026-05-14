@@ -1,5 +1,18 @@
 [
   {
+    "id": "architecture",
+    "name": "Architecture",
+    "files": [
+      {
+        "name": "Overview",
+        "slug": "overview",
+        "languages": [
+          "en"
+        ]
+      }
+    ]
+  },
+  {
     "id": "getting-started",
     "name": "Getting Started",
     "files": [
