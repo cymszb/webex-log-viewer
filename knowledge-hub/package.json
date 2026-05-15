@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node scripts/generate-manifest.mjs && vite",
     "update": "node scripts/generate-manifest.mjs",
+    "sync-blob": "bash scripts/sync-blob.sh",
     "watch": "node scripts/watch-content.mjs",
     "prebuild": "node scripts/generate-manifest.mjs",
     "build": "vite build",
