@@ -16,6 +16,7 @@ export default function App() {
   return (
     <div style={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
       <Sidebar
+        groups={hub.groups}
         topics={hub.topics}
         expandedTopics={hub.expandedTopics}
         currentTopicId={hub.topicId}

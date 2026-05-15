@@ -2,15 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { manifestUrl } from './config';
 
 export interface ManifestFile { name: string; slug: string; languages: string[]; }
-export interface ManifestTopic { id: string; name: string; contentPath: string; files: ManifestFile[]; }
-
-export interface HubState {
-  topicId: string | null;
-  fileSlug: string | null;
-  lang: 'en' | 'zh';
-  expandedTopics: Set<string>;
-  topics: ManifestTopic[];
-}
+export interface ManifestGroup { id: string; name: string; }
+export interface ManifestTopic { id: string; name: string; contentPath: string; groupId?: string; files: ManifestFile[]; }
 
 function parseHash(): { topicId: string | null; fileSlug: string | null; lang: 'en' | 'zh' } {
   const hash = window.location.hash.replace('#/', '');
@@ -30,12 +23,14 @@ function buildHash(topicId: string, fileSlug: string, lang: string): string {
 
 export function useHubState() {
   const [state, setState] = useState<{
+    groups: ManifestGroup[];
     topics: ManifestTopic[];
     topicId: string | null;
     fileSlug: string | null;
     lang: 'en' | 'zh';
     expandedTopics: Set<string>;
   }>(() => ({
+    groups: [],
     topics: [],
     topicId: null,
     fileSlug: null,
@@ -47,10 +42,13 @@ export function useHubState() {
   useEffect(() => {
     fetch(manifestUrl())
       .then(r => r.json())
-      .then((topics: ManifestTopic[]) => {
+      .then((data: { groups?: ManifestGroup[]; topics: ManifestTopic[] }) => {
+        const topics = data.topics || data; // support old flat format
+        const groups = Array.isArray(data.groups) ? data.groups : [];
         const hash = parseHash();
         setState(s => ({
           ...s,
+          groups,
           topics,
           topicId: hash.topicId || topics[0]?.id || null,
           fileSlug: hash.fileSlug || topics[0]?.files[0]?.slug || null,
@@ -111,5 +109,5 @@ export function useHubState() {
   const currentTopic = state.topics.find(t => t.id === state.topicId);
   const currentFile = currentTopic?.files.find(f => f.slug === state.fileSlug);
 
-  return { ...state, currentTopic, currentFile, navigate, setLang, toggleTopicExpand };
+  return { groups: state.groups, topics: state.topics, topicId: state.topicId, fileSlug: state.fileSlug, lang: state.lang, expandedTopics: state.expandedTopics, currentTopic, currentFile, navigate, setLang, toggleTopicExpand };
 }

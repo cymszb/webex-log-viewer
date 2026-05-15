@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import type { ManifestTopic } from '../hooks';
+import type { ManifestGroup, ManifestTopic } from '../hooks';
 
 interface SidebarProps {
+  groups: ManifestGroup[];
   topics: ManifestTopic[];
   expandedTopics: Set<string>;
   currentTopicId: string | null;
@@ -11,7 +12,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({
-  topics, expandedTopics, currentTopicId, currentFileSlug,
+  groups, topics, expandedTopics, currentTopicId, currentFileSlug,
   onNavigate, onToggleExpand
 }: SidebarProps) {
   const [search, setSearch] = useState('');
@@ -48,8 +49,17 @@ export function Sidebar({
       <nav style={{ flex: 1, overflowY: 'auto', padding: '4px 8px' }}>
         {filtered.map(topic => {
           const isExpanded = expandedTopics.has(topic.id);
+          const group = groups.find(g => g.id === topic.groupId);
           return (
             <div key={topic.id} style={{ marginBottom: 2 }}>
+              {group && (
+                <div style={{
+                  padding: '6px 8px 2px', fontSize: 10, fontWeight: 600,
+                  color: '#3a4468', textTransform: 'uppercase', letterSpacing: '0.1em'
+                }}>
+                  {group.name}
+                </div>
+              )}
               <button
                 onClick={() => onToggleExpand(topic.id)}
                 style={{
