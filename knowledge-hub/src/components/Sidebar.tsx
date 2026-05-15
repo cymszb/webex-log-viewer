@@ -32,7 +32,6 @@ function TopicRow({
           if (hasChildren) {
             onToggleExpand(topic.id);
           } else if (topic.files.length > 0) {
-            // Leaf topic with files: expand and navigate to first file
             onToggleExpand(topic.id);
             if (!isExpanded && topic.files[0]) {
               onNavigate(topic.id, topic.files[0].slug);
@@ -110,10 +109,24 @@ export function Sidebar({
 
   return (
     <aside style={{
-      width: 230, background: 'var(--color-bg-sidebar)',
+      width: 230, height: '100%', background: 'var(--color-bg-sidebar)',
       borderRight: '1px solid var(--color-border-subtle)',
       display: 'flex', flexDirection: 'column', flexShrink: 0
     }}>
+      {/* Title header */}
+      <div style={{
+        padding: '12px 14px',
+        borderBottom: '1px solid var(--color-border-subtle)',
+      }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: '#f0f4ff' }}>
+          Knowledge Hub
+        </div>
+        <div style={{ fontSize: 11, color: '#5a6080', marginTop: 2 }}>
+          Web &amp; AI Documentation
+        </div>
+      </div>
+
+      {/* Search */}
       <div style={{ padding: 10 }}>
         <input
           type="text"
@@ -127,6 +140,8 @@ export function Sidebar({
           }}
         />
       </div>
+
+      {/* Topic list */}
       <nav style={{ flex: 1, overflowY: 'auto', padding: '4px 8px' }}>
         {filteredTopics.map(topic => (
           <TopicRow
