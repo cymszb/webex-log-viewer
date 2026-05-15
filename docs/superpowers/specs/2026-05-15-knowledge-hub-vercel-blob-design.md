@@ -47,14 +47,14 @@ public/content/  →  npm run sync-blob  →  Vercel Blob  →  Browser
 
 ## 4. Implementation
 
-### 4.1 Sync Script (`scripts/sync-blob.mjs`)
+### 4.1 Sync Script (`scripts/sync-blob.sh`)
 
-Uses `@vercel/blob` SDK to upload content. Steps:
+Uses the `vercel` CLI to upload content. Steps:
 1. Run `generate-manifest.mjs` to create fresh `topics.json`
-2. Scan `public/content/` recursively for all `.md` files
-3. Upload each file to Blob at path `content/<topic>/<file>.md`
-4. Upload `public/data/topics.json` to Blob at `topics.json`
-5. Report uploaded files
+2. Upload manifest: `vercel blob add knowledge-hub/topics.json public/data/topics.json`
+3. For each `.md` file in `public/content/`, upload:
+   `vercel blob add knowledge-hub/content/<topic>/<file>.md <local-path>`
+4. Report uploaded files
 
 ### 4.2 React App Changes
 
@@ -94,7 +94,7 @@ knowledge-hub/
 
 | Package | Purpose |
 |---|---|
-| `@vercel/blob` | Blob SDK (used in sync script only, not in the app) |
+| `vercel` CLI | Upload content to Vercel Blob (`npm i -g vercel`) |
 
 ## 7. Scope
 
