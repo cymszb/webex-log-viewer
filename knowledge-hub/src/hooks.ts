@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { manifestUrl } from './config';
 
 export interface ManifestFile { name: string; slug: string; languages: string[]; }
 export interface ManifestTopic { id: string; name: string; contentPath: string; files: ManifestFile[]; }
@@ -44,7 +45,7 @@ export function useHubState() {
 
   // Load manifest
   useEffect(() => {
-    fetch('./data/topics.json')
+    fetch(manifestUrl())
       .then(r => r.json())
       .then((topics: ManifestTopic[]) => {
         const hash = parseHash();

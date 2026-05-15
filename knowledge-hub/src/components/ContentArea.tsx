@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { LangToggle } from './LangToggle';
 import type { ManifestTopic, ManifestFile } from '../hooks';
+import { contentUrl } from '../config';
 
 interface ContentAreaProps {
   currentTopic: ManifestTopic | undefined;
@@ -24,7 +25,7 @@ export function ContentArea({ currentTopic, currentFile, lang, onSetLang }: Cont
     const fileName = currentFile.slug.endsWith('.md')
       ? currentFile.slug
       : `${currentFile.slug}.${lang}.md`;
-    const filePath = `./content/${currentTopic.contentPath}/${fileName}`;
+    const filePath = contentUrl(currentTopic.contentPath, fileName);
     fetch(filePath)
       .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
       .then(text => { if (!ignore) setContent(text); })
