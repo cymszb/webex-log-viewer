@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 export interface ManifestFile { name: string; slug: string; languages: string[]; }
-export interface ManifestTopic { id: string; name: string; files: ManifestFile[]; }
+export interface ManifestTopic { id: string; name: string; contentPath: string; files: ManifestFile[]; }
 
 export interface HubState {
   topicId: string | null;

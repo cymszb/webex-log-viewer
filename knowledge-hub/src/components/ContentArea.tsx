@@ -19,7 +19,12 @@ export function ContentArea({ currentTopic, currentFile, lang, onSetLang }: Cont
     if (!currentTopic || !currentFile) return;
     let ignore = false;
     setLoading(true);
-    const filePath = `./content/${currentTopic.id}/${currentFile.slug}.${lang}.md`;
+    // Plain .md files (no language suffix) are used as-is;
+    // language-tagged files use slug.lang.md pattern
+    const fileName = currentFile.slug.endsWith('.md')
+      ? currentFile.slug
+      : `${currentFile.slug}.${lang}.md`;
+    const filePath = `./content/${currentTopic.contentPath}/${fileName}`;
     fetch(filePath)
       .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
       .then(text => { if (!ignore) setContent(text); })

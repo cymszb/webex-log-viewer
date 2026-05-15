@@ -1,35 +1,220 @@
 [
   {
-    "id": "architecture",
-    "name": "Architecture",
+    "id": "04-backend",
+    "name": "Backend",
+    "contentPath": "webtech/04-backend",
     "files": [
       {
-        "name": "Overview",
-        "slug": "overview",
+        "name": "Authentication",
+        "slug": "05-authentication.md",
         "languages": [
           "en"
-        ]
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Databases",
+        "slug": "04-databases.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "How Servers Work",
+        "slug": "01-how-servers-work.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Nodejs Basics",
+        "slug": "02-nodejs-basics.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Rest Apis",
+        "slug": "03-rest-apis.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
       }
     ]
   },
   {
-    "id": "getting-started",
-    "name": "Getting Started",
+    "id": "01-foundations",
+    "name": "Foundations",
+    "contentPath": "webtech/01-foundations",
     "files": [
       {
-        "name": "Installation",
-        "slug": "installation",
+        "name": "Css Basics",
+        "slug": "04-css-basics.md",
         "languages": [
           "en"
-        ]
+        ],
+        "isPlain": true
       },
       {
-        "name": "Overview",
-        "slug": "overview",
+        "name": "Dev Tools",
+        "slug": "05-dev-tools.md",
         "languages": [
-          "en",
-          "zh"
-        ]
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "How The Web Works",
+        "slug": "01-how-the-web-works.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Html Basics",
+        "slug": "03-html-basics.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Http And Browsers",
+        "slug": "02-http-and-browsers.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      }
+    ]
+  },
+  {
+    "id": "02-frontend",
+    "name": "Frontend",
+    "contentPath": "webtech/02-frontend",
+    "files": [
+      {
+        "name": "Accessibility",
+        "slug": "04-accessibility.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Css Layout",
+        "slug": "02-css-layout.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Html Semantics",
+        "slug": "01-html-semantics.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Responsive Design",
+        "slug": "03-responsive-design.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      }
+    ]
+  },
+  {
+    "id": "05-fullstack",
+    "name": "Fullstack",
+    "contentPath": "webtech/05-fullstack",
+    "files": [
+      {
+        "name": "Connecting Frontend Backend",
+        "slug": "01-connecting-frontend-backend.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Deployment",
+        "slug": "02-deployment.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "First Fullstack Project",
+        "slug": "03-first-fullstack-project.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "What Next",
+        "slug": "04-what-next.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      }
+    ]
+  },
+  {
+    "id": "03-javascript",
+    "name": "Javascript",
+    "contentPath": "webtech/03-javascript",
+    "files": [
+      {
+        "name": "Async Javascript",
+        "slug": "03-async-javascript.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Dom Manipulation",
+        "slug": "02-dom-manipulation.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Fetch And Apis",
+        "slug": "04-fetch-and-apis.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Js Fundamentals",
+        "slug": "01-js-fundamentals.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
+      },
+      {
+        "name": "Modern Js",
+        "slug": "05-modern-js.md",
+        "languages": [
+          "en"
+        ],
+        "isPlain": true
       }
     ]
   }

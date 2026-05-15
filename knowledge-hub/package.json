@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/generate-manifest.mjs && vite",
+    "update": "node scripts/generate-manifest.mjs",
     "prebuild": "node scripts/generate-manifest.mjs",
     "build": "vite build",
     "preview": "vite preview",
