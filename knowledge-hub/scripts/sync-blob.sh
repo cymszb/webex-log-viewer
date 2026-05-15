@@ -14,14 +14,19 @@ BLOB_PREFIX="knowledge-hub"
 echo "==> Regenerating manifest..."
 node "$SCRIPT_DIR/generate-manifest.mjs"
 
+# Load token from .env.local if present
+if [ -f "$PROJECT_DIR/.env.local" ]; then
+  export $(grep -v '^#' "$PROJECT_DIR/.env.local" | sed 's/"//g' | xargs)
+fi
+
 echo "==> Uploading topics.json..."
-vercel blob add "$BLOB_PREFIX/topics.json" "$DATA_DIR/topics.json"
+vercel blob put --access public "$DATA_DIR/topics.json" "knowledge-hub/topics.json"
 
 echo "==> Uploading content files..."
 find "$CONTENT_DIR" -type f -name "*.md" | while read -r file; do
   rel=$(node -e "const p=require('path');console.log(p.relative('$CONTENT_DIR'.replace(/\\\\/g,'/'),'$file'.replace(/\\\\/g,'/')).replace(/\\\\/g,'/'))")
   echo "  $rel"
-  vercel blob add "$BLOB_PREFIX/content/$rel" "$file"
+  vercel blob put --access public --rw-token "$BLOB_READ_WRITE_TOKEN" "$file" "knowledge-hub/content/$rel"
 done
 
 echo ""

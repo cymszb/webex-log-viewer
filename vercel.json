@@ -1,3 +1,6 @@
 {
-  "framework": null
+  "framework": null,
+  "installCommand": "cd knowledge-hub && npm install",
+  "buildCommand": "cd knowledge-hub && npm run build",
+  "outputDirectory": "."
 }
