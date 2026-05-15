@@ -20,5 +20,10 @@ module.exports = defineConfig({
     },
   ],
 
-  webServer: undefined,
+  webServer: {
+    command: 'python -m http.server 8099',
+    url: 'http://localhost:8099/tools.json',
+    reuseExistingServer: !process.env.CI,
+    timeout: 15000,
+  },
 });
