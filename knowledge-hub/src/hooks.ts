@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { manifestUrl } from './config';
 
 export interface ManifestFile { name: string; slug: string; languages: string[]; }
-export interface ManifestGroup { id: string; name: string; }
-export interface ManifestTopic { id: string; name: string; contentPath: string; groupId?: string; files: ManifestFile[]; }
+export interface ManifestTopic { id: string; name: string; contentPath: string; files: ManifestFile[]; children?: ManifestTopic[]; }
 
 function parseHash(): { topicId: string | null; fileSlug: string | null; lang: 'en' | 'zh' } {
   const hash = window.location.hash.replace('#/', '');
@@ -23,14 +22,12 @@ function buildHash(topicId: string, fileSlug: string, lang: string): string {
 
 export function useHubState() {
   const [state, setState] = useState<{
-    groups: ManifestGroup[];
     topics: ManifestTopic[];
     topicId: string | null;
     fileSlug: string | null;
     lang: 'en' | 'zh';
     expandedTopics: Set<string>;
   }>(() => ({
-    groups: [],
     topics: [],
     topicId: null,
     fileSlug: null,
@@ -42,18 +39,19 @@ export function useHubState() {
   useEffect(() => {
     fetch(manifestUrl())
       .then(r => r.json())
-      .then((data: { groups?: ManifestGroup[]; topics: ManifestTopic[] }) => {
-        const topics = data.topics || data; // support old flat format
-        const groups = Array.isArray(data.groups) ? data.groups : [];
+      .then((data: { topics: ManifestTopic[] }) => {
+        const topics = data.topics || data;
         const hash = parseHash();
+        // Find first leaf file (descend into children if needed)
+        const firstTopic = topics[0];
+        const firstLeaf = firstTopic?.files.length ? firstTopic : firstTopic?.children?.[0];
         setState(s => ({
           ...s,
-          groups,
           topics,
-          topicId: hash.topicId || topics[0]?.id || null,
-          fileSlug: hash.fileSlug || topics[0]?.files[0]?.slug || null,
+          topicId: hash.topicId || firstLeaf?.id || null,
+          fileSlug: hash.fileSlug || firstLeaf?.files[0]?.slug || null,
           lang: hash.lang,
-          expandedTopics: new Set(hash.topicId ? [hash.topicId] : topics[0] ? [topics[0].id] : [])
+          expandedTopics: new Set(hash.topicId ? [hash.topicId] : firstLeaf ? [firstLeaf.id] : [])
         }));
       });
   }, []);
@@ -106,8 +104,20 @@ export function useHubState() {
     });
   }, []);
 
-  const currentTopic = state.topics.find(t => t.id === state.topicId);
+  // Find topic in flat list or nested children
+  function findTopic(topics: ManifestTopic[], id: string): ManifestTopic | undefined {
+    for (const t of topics) {
+      if (t.id === id) return t;
+      if (t.children) {
+        const found = findTopic(t.children, id);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  }
+
+  const currentTopic = state.topicId ? findTopic(state.topics, state.topicId) : undefined;
   const currentFile = currentTopic?.files.find(f => f.slug === state.fileSlug);
 
-  return { groups: state.groups, topics: state.topics, topicId: state.topicId, fileSlug: state.fileSlug, lang: state.lang, expandedTopics: state.expandedTopics, currentTopic, currentFile, navigate, setLang, toggleTopicExpand };
+  return { topics: state.topics, topicId: state.topicId, fileSlug: state.fileSlug, lang: state.lang, expandedTopics: state.expandedTopics, currentTopic, currentFile, navigate, setLang, toggleTopicExpand };
 }

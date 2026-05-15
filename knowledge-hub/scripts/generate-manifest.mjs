@@ -33,10 +33,16 @@ async function scan(dir) {
     if (entry.isDirectory()) {
       const sub = await scan(full);
       const relPath = full.substring(CONTENT_DIR.length + 1).replace(/\\/g, '/');
-      if (sub.files.length > 0) {
-        topics.push({ id: entry.name, name: displayName(entry.name), contentPath: relPath, files: sub.files });
+      if (sub.files.length > 0 || sub.topics.length > 0) {
+        topics.push({
+          id: entry.name,
+          name: displayName(entry.name),
+          contentPath: relPath,
+          files: sub.files,
+          ...(sub.topics.length > 0 ? { children: sub.topics } : {})
+        });
       }
-      topics.push(...sub.topics);
+      if (sub.topics.length === 0 && sub.files.length === 0) continue;
     } else {
       const parsed = parseMd(entry.name);
       if (parsed) {
@@ -58,41 +64,18 @@ async function scan(dir) {
   files.sort((a, b) => a.name.localeCompare(b.name));
   topics.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 
-  return { topics, files };
-}
-
-function detectGroups(topics) {
-  const groups = [];
-  // Collect unique group prefixes from content paths
-  const groupMap = new Map();
+  // Sort children recursively
   for (const t of topics) {
-    const parts = t.contentPath.replace(/\\/g, '/').split('/');
-    if (parts.length > 1) {
-      // First segment is the container folder
-      const gid = parts[0];
-      if (!groupMap.has(gid)) {
-        groupMap.set(gid, { id: gid, name: displayName(gid) });
-      }
-    }
+    if (t.children) t.children.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
   }
-  return [...groupMap.values()];
+
+  return { topics, files };
 }
 
 async function main() {
   const { topics, files } = await scan(CONTENT_DIR);
 
-  // Detect groups from container directories
-  const groups = detectGroups(topics);
-
-  // Assign groupId to topics
-  for (const t of topics) {
-    const parts = t.contentPath.replace(/\\/g, '/').split('/');
-    if (parts.length > 1) {
-      t.groupId = parts[0];
-    }
-  }
-
-  const manifest = { groups, topics: [...topics] };
+  const manifest = { topics: [...topics] };
 
   if (files.length > 0) {
     manifest.topics.push({ id: 'root', name: 'Content', contentPath: '', files });
@@ -100,7 +83,7 @@ async function main() {
 
   await mkdir(OUT_DIR, { recursive: true });
   await writeFile(OUT_FILE, JSON.stringify(manifest, null, 2));
-  console.log(`Generated ${OUT_FILE} with ${groups.length} group(s) and ${manifest.topics.length} topic(s).`);
+  console.log(`Generated ${OUT_FILE} with ${manifest.topics.length} top-level topic(s).`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
