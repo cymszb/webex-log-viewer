@@ -45,13 +45,29 @@ export function useHubState() {
         // Find first leaf file (descend into children if needed)
         const firstTopic = topics[0];
         const firstLeaf = firstTopic?.files.length ? firstTopic : firstTopic?.children?.[0];
+        // Collect all ancestors of the first leaf (parent topics must be expanded too)
+        const expandIds = new Set<string>();
+        if (hash.topicId) {
+          expandIds.add(hash.topicId);
+        } else if (firstLeaf) {
+          expandIds.add(firstLeaf.id);
+          // Walk up the tree to find ancestors
+          function addAncestors(ts: ManifestTopic[], targetId: string, path: string[]) {
+            for (const t of ts) {
+              if (t.id === targetId) { path.forEach(id => expandIds.add(id)); return true; }
+              if (t.children && addAncestors(t.children, targetId, [...path, t.id])) return true;
+            }
+            return false;
+          }
+          addAncestors(topics, firstLeaf.id, []);
+        }
         setState(s => ({
           ...s,
           topics,
           topicId: hash.topicId || firstLeaf?.id || null,
           fileSlug: hash.fileSlug || firstLeaf?.files[0]?.slug || null,
           lang: hash.lang,
-          expandedTopics: new Set(hash.topicId ? [hash.topicId] : firstLeaf ? [firstLeaf.id] : [])
+          expandedTopics: expandIds
         }));
       });
   }, []);
