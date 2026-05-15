@@ -24,5 +24,7 @@ playwright-report/
 test-results/
 .playwright-mcp/
 
-# Generated manifest (knowledge hub)
-knowledge-hub/public/data/
+# Knowledge hub content (managed via Vercel Blob)
+knowledge-hub/public/content/
+knowledge-hub/dist/content/
+knowledge-hub/dist/data/
