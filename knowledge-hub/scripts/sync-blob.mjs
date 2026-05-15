@@ -62,8 +62,7 @@ async function uploadToBlob(token, pathname, filePath) {
   }
 
   const result = await response.json();
-  // Convert PUT URL to public read URL (remove /put/ prefix)
-  return result.url.replace('/put/', '/');
+  return result.url;
 }
 
 async function main() {
