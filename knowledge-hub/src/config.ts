@@ -4,7 +4,9 @@
 const BLOB_BASE = import.meta.env.VITE_BLOB_BASE_URL as string | undefined;
 
 export function manifestUrl(): string {
-  return BLOB_BASE ? `${BLOB_BASE}/topics.json` : './data/topics.json';
+  // Cache-busting: topics.json changes when content is updated
+  const bust = BLOB_BASE ? `?t=${Date.now()}` : '';
+  return BLOB_BASE ? `${BLOB_BASE}/topics.json${bust}` : './data/topics.json';
 }
 
 export function contentUrl(topicPath: string, fileName: string): string {
