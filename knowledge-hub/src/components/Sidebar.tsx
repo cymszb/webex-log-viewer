@@ -8,6 +8,8 @@ interface SidebarProps {
   currentFileSlug: string | null;
   onNavigate: (topicId: string, fileSlug: string) => void;
   onToggleExpand: (topicId: string) => void;
+  onClose?: () => void;
+  sidebarOpen?: boolean;
 }
 
 function TopicRow({
@@ -32,6 +34,7 @@ function TopicRow({
           if (hasChildren) {
             onToggleExpand(topic.id);
           } else if (topic.files.length > 0) {
+            // Leaf topic with files: expand and navigate to first file
             onToggleExpand(topic.id);
             if (!isExpanded && topic.files[0]) {
               onNavigate(topic.id, topic.files[0].slug);
@@ -93,7 +96,7 @@ function TopicRow({
 
 export function Sidebar({
   topics, expandedTopics, currentTopicId, currentFileSlug,
-  onNavigate, onToggleExpand
+  onNavigate, onToggleExpand, onClose, sidebarOpen
 }: SidebarProps) {
   const [search, setSearch] = useState('');
 
@@ -108,40 +111,37 @@ export function Sidebar({
     : topics;
 
   return (
-    <aside style={{
-      width: 230, height: '100%', background: 'var(--color-bg-sidebar)',
+    <aside className={sidebarOpen ? 'open' : ''} style={{
+      height: '100%', background: 'var(--color-bg-sidebar)',
       borderRight: '1px solid var(--color-border-subtle)',
       display: 'flex', flexDirection: 'column', flexShrink: 0
     }}>
-      {/* Title header */}
-      <div style={{
-        padding: '12px 14px',
-        borderBottom: '1px solid var(--color-border-subtle)',
-      }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: '#f0f4ff' }}>
-          Knowledge Hub
-        </div>
-        <div style={{ fontSize: 11, color: '#5a6080', marginTop: 2 }}>
-          Web &amp; AI Documentation
-        </div>
-      </div>
-
-      {/* Search */}
-      <div style={{ padding: 10 }}>
+      <div style={{ padding: 10, display: 'flex', gap: 6, alignItems: 'center' }}>
         <input
           type="text"
           placeholder="Search topics..."
           value={search}
           onChange={e => setSearch(e.target.value)}
           style={{
-            width: '100%', background: '#111520', border: '1px solid #1e2535',
+            flex: 1, background: '#111520', border: '1px solid #1e2535',
             color: '#8090b8', padding: '6px 10px', borderRadius: 6, fontSize: 12,
             outline: 'none', boxSizing: 'border-box'
           }}
         />
+        {onClose && (
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none', border: 'none', color: '#5a6080',
+              fontSize: 20, cursor: 'pointer', padding: '0 4px',
+              lineHeight: 1, fontFamily: 'inherit',
+            }}
+            aria-label="Close sidebar"
+          >
+            ✕
+          </button>
+        )}
       </div>
-
-      {/* Topic list */}
       <nav style={{ flex: 1, overflowY: 'auto', padding: '4px 8px' }}>
         {filteredTopics.map(topic => (
           <TopicRow
