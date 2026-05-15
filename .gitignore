@@ -28,3 +28,6 @@ test-results/
 knowledge-hub/public/content/
 knowledge-hub/dist/content/
 knowledge-hub/dist/data/
+knowledge-hub/.sync-state.json
+.vercel
+.env*.local
