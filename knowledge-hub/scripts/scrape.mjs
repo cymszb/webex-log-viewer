@@ -44,6 +44,27 @@ function resolveUrl(href, baseUrl) {
   }
 }
 
+function extractTime($$, selector) {
+  if (!selector) return new Date().toISOString().slice(0, 10);
+  const text = $$(selector).first().text().trim();
+  if (!text) return new Date().toISOString().slice(0, 10);
+  // Strip prefix like "Published " that some sites use
+  const cleaned = text.replace(/^(Published|Posted)\s+/i, '');
+  const parsed = new Date(cleaned);
+  if (isNaN(parsed.getTime())) return new Date().toISOString().slice(0, 10);
+  return parsed.toISOString().slice(0, 10);
+}
+
+function extractDescription($$, selector, contentEl) {
+  if (selector) {
+    const text = $$(selector).first().text().trim();
+    if (text) return text;
+  }
+  // Fallback: first <p> inside the content element
+  const firstP = contentEl.find('p').first().text().trim();
+  return firstP || '';
+}
+
 async function main() {
   const { source: sourceName, dryRun } = parseArgs();
 
@@ -153,10 +174,27 @@ async function main() {
           continue;
         }
 
+        // Extract metadata
+        const pubTime = extractTime($$, source.timeSelector);
+        const description = extractDescription($$, source.descSelector, contentEl);
+
         const contentHtml = contentEl.html();
         const markdown = turndown.turndown(contentHtml);
 
-        const fileContent = `# ${title}\n\n> Source: <${url}>\n\n${markdown}\n`;
+        // Build file with frontmatter
+        const escapeYaml = (s) => s.replace(/"/g, '\\"');
+        const fileContent = [
+          '---',
+          `time: ${pubTime}`,
+          `description: "${escapeYaml(description)}"`,
+          '---',
+          '',
+          `# ${title}`,
+          '',
+          `> Source: <${url}>`,
+          '',
+          markdown,
+        ].join('\n') + '\n';
 
         await mkdir(targetDir, { recursive: true });
         const filePath = join(targetDir, `${fileSlug}.md`);
