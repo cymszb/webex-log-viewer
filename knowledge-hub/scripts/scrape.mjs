@@ -174,6 +174,21 @@ async function main() {
           continue;
         }
 
+        // Resolve relative image URLs to absolute
+        contentEl.find('img').each((_, img) => {
+          const src = $$(img).attr('src');
+          if (src) {
+            try { $$(img).attr('src', new URL(src, url).href); } catch {}
+          }
+          const srcset = $$(img).attr('srcset');
+          if (srcset) {
+            const resolved = srcset.replace(/(\S+)(\s+\d+[wx])?/g, (match, u, size) => {
+              try { return new URL(u, url).href + (size || ''); } catch { return match; }
+            });
+            $$(img).attr('srcset', resolved);
+          }
+        });
+
         // Extract metadata
         const pubTime = extractTime($$, source.timeSelector);
         const description = extractDescription($$, source.descSelector, contentEl);
