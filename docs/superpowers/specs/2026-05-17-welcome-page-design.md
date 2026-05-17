@@ -93,7 +93,15 @@ description: What we learned working with dozens of teams building LLM agents.
 
 - Read `.md` files, parse YAML frontmatter if present
 - `ManifestFile` type gains: `time?: string`, `description?: string`
-- Files sorted by `time` descending within each topic
+
+**Fallbacks for existing files without frontmatter:**
+- `time` → `fs.stat(filename).mtime` (file modification date)
+- `description` → read the `.md` file, skip `# Title` and `> Source:` lines, take first non-empty paragraph
+
+### Ordering
+
+- **Sidebar (Browse):** alphabetical by name (existing behavior, A-Z for reference lookups)
+- **Welcome page:** files sorted by `time` descending within each topic group (newest first, for discovery)
 
 ### Type Changes (`hooks.ts`)
 
