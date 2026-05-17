@@ -74,7 +74,9 @@ async function main() {
 
     if (source.listUrl) {
       console.log(`  Fetching list: ${source.listUrl}`);
-      const res = await fetch(source.listUrl);
+      const res = await fetch(source.listUrl, {
+        headers: { 'User-Agent': 'KnowledgeHubScraper/1.0' },
+      });
       const html = await res.text();
       const $ = cheerio.load(html);
 
@@ -117,7 +119,9 @@ async function main() {
 
       try {
         console.log(`  Fetching: ${url}`);
-        const articleRes = await fetch(url);
+        const articleRes = await fetch(url, {
+          headers: { 'User-Agent': 'KnowledgeHubScraper/1.0' },
+        });
         if (!articleRes.ok) {
           console.log(`  Skipping: HTTP ${articleRes.status}`);
           continue;
