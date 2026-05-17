@@ -24,15 +24,20 @@ function collectFiles(topic: ManifestTopic): ManifestFile[] {
   return files;
 }
 
-function getSourceName(topic: ManifestTopic, file: ManifestFile): string {
+function getFileOwner(topic: ManifestTopic, file: ManifestFile): ManifestTopic | null {
+  if (topic.files?.some(f => f.slug === file.slug)) return topic;
   if (topic.children) {
     for (const child of topic.children) {
-      if (child.files?.some(f => f.slug === file.slug)) {
-        return child.name;
-      }
+      const owner = getFileOwner(child, file);
+      if (owner) return owner;
     }
   }
-  return topic.name;
+  return null;
+}
+
+function getSourceName(topic: ManifestTopic, file: ManifestFile): string {
+  const owner = getFileOwner(topic, file);
+  return owner ? owner.name : topic.name;
 }
 
 function countSources(topic: ManifestTopic): number {
@@ -85,10 +90,10 @@ export function WelcomePage({ topics, onNavigate }: WelcomePageProps) {
                 <a
                   className="welcome-article-card"
                   key={file.slug}
-                  href={`#/${topic.id}/${file.slug}`}
+                  href={`#/${getFileOwner(topic, file)?.id || topic.id}/${file.slug}`}
                   onClick={(e) => {
                     e.preventDefault();
-                    onNavigate(topic.id, file.slug);
+                    onNavigate(getFileOwner(topic, file)?.id || topic.id, file.slug);
                   }}
                 >
                   <div className="welcome-article-top">
