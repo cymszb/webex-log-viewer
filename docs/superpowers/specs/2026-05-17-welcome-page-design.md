@@ -145,3 +145,8 @@ Computed from `topics`:
 - Transitions: 0.2s ease on hover
 - Backdrop blur on topbar
 - Subtle radial gradient glows in background
+
+### Mobile Responsive
+
+- `≤768px`: reduced padding (20px), smaller hero (26px), stats tighten, article names wrap
+- `≤480px`: stats wrap to fill width, article top row wraps, descriptions clamped to 2 lines

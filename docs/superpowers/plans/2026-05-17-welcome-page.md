@@ -375,6 +375,33 @@ Write `knowledge-hub/src/components/WelcomePage.css`:
   border-radius: 8px; transition: all 0.2s; letter-spacing: 0.01em;
 }
 .welcome-show-more:hover { color: #e6edf3; background: #11161e; }
+
+/* ── Mobile: ≤768px ── */
+@media (max-width: 768px) {
+  .welcome-main { padding: 28px 20px 60px; }
+  .welcome-hero { margin-bottom: 32px; }
+  .welcome-hero h1 { font-size: 26px; }
+  .welcome-hero p { font-size: 14px; }
+  .welcome-stats { gap: 10px; margin-bottom: 32px; }
+  .welcome-stat { padding: 14px 16px; }
+  .welcome-stat-num { font-size: 22px; }
+  .welcome-article-card { padding: 14px 16px; }
+  .welcome-article-name {
+    white-space: normal; overflow: visible; text-overflow: unset;
+    font-size: 13px;
+  }
+}
+
+/* ── Mobile: ≤480px ── */
+@media (max-width: 480px) {
+  .welcome-main { padding: 20px 14px 40px; }
+  .welcome-hero h1 { font-size: 22px; }
+  .welcome-stats { flex-wrap: wrap; }
+  .welcome-stat { flex: 1 1 30%; max-width: none; }
+  .welcome-article-top { flex-wrap: wrap; gap: 6px; }
+  .welcome-article-time { font-size: 10px; }
+  .welcome-article-desc { -webkit-line-clamp: 2; }
+}
 ```
 
 - [ ] **Step 2: Create WelcomePage.tsx**
@@ -553,7 +580,7 @@ export default function App() {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* Tab bar */}
       <div style={{
-        height: 52, display: 'flex', alignItems: 'center', padding: '0 32px', gap: 2,
+        height: 52, display: 'flex', alignItems: 'center', padding: '0 20px', gap: 2,
         background: 'rgba(9,12,18,0.85)', backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid #1e2633',
         flexShrink: 0,
