@@ -1,7 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { manifestUrl } from './config';
 
-export interface ManifestFile { name: string; slug: string; languages: string[]; }
+export interface ManifestFile {
+  name: string;
+  slug: string;
+  languages: string[];
+  isPlain?: boolean;
+  time?: string;
+  description?: string;
+}
 export interface ManifestTopic { id: string; name: string; contentPath: string; files: ManifestFile[]; children?: ManifestTopic[]; }
 
 function parseHash(): { topicId: string | null; fileSlug: string | null; lang: 'en' | 'zh' } {

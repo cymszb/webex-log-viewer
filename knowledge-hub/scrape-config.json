@@ -5,6 +5,8 @@
       "listUrl": "https://www.anthropic.com/engineering",
       "listItem": "article a",
       "content": "main article",
+      "timeSelector": ".HeroEngineering-module-scss-module__j1ivRa__date",
+      "descSelector": ".HeroEngineering-module-scss-module__j1ivRa__summary",
       "targetFolder": "AI-Engineering/Anthropic"
     },
     {
@@ -12,6 +14,8 @@
       "listUrl": "https://openai.com/news/engineering/",
       "listItem": "a[id][aria-label]",
       "content": "main article",
+      "timeSelector": ".text-meta.text-primary-100",
+      "descSelector": null,
       "targetFolder": "AI-Engineering/OpenAI"
     }
   ]

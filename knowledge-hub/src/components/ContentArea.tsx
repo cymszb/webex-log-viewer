@@ -29,7 +29,7 @@ export function ContentArea({ currentTopic, currentFile, lang, onSetLang, onOpen
     const filePath = contentUrl(currentTopic.contentPath, fileName);
     fetch(filePath)
       .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
-      .then(text => { if (!ignore) setContent(text); })
+      .then(text => { if (!ignore) setContent(text.replace(/^---[\s\S]*?---\n/, '')); })
       .catch(() => { if (!ignore) setContent('*Content not available in this language.*'); })
       .finally(() => { if (!ignore) setLoading(false); });
     return () => { ignore = true; };
