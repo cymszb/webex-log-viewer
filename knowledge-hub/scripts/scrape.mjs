@@ -49,7 +49,7 @@ function extractTime($$, selector) {
   const text = $$(selector).first().text().trim();
   if (!text) return new Date().toISOString().slice(0, 10);
   // Strip prefix like "Published " that some sites use
-  const cleaned = text.replace(/^(Published|Posted)\s+/i, '');
+  const cleaned = text.replace(/^(?:Published|Posted)\s*:?\s*(?:on\s+)?/i, '');
   const parsed = new Date(cleaned);
   if (isNaN(parsed.getTime())) return new Date().toISOString().slice(0, 10);
   return parsed.toISOString().slice(0, 10);
@@ -182,11 +182,12 @@ async function main() {
         const markdown = turndown.turndown(contentHtml);
 
         // Build file with frontmatter
-        const escapeYaml = (s) => s.replace(/"/g, '\\"');
+        const indentDesc = description.replace(/^/gm, '  ');
         const fileContent = [
           '---',
           `time: ${pubTime}`,
-          `description: "${escapeYaml(description)}"`,
+          'description: |',
+          indentDesc,
           '---',
           '',
           `# ${title}`,
