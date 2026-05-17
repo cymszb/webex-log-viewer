@@ -1,0 +1,18 @@
+{
+  "sources": [
+    {
+      "name": "Anthropic Engineering",
+      "listUrl": "https://www.anthropic.com/engineering",
+      "listItem": "article a",
+      "content": "main article",
+      "targetFolder": "AI-Engineering/Anthropic"
+    },
+    {
+      "name": "OpenAI Engineering",
+      "listUrl": "https://openai.com/news/engineering/",
+      "listItem": "a[id][aria-label]",
+      "content": "main article",
+      "targetFolder": "AI-Engineering/OpenAI"
+    }
+  ]
+}
