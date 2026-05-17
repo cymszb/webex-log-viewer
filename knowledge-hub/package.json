@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "node scripts/generate-manifest.mjs && vite",
     "update": "node scripts/generate-manifest.mjs",
-"sync-blob": "node scripts/sync-blob.mjs",
+    "sync-blob": "node scripts/sync-blob.mjs",
     "sync-blob-force": "node scripts/sync-blob.mjs --force",
+    "scrape": "node scripts/scrape.mjs",
     "watch": "node scripts/watch-content.mjs",
     "prebuild": "node scripts/generate-manifest.mjs",
     "build": "vite build",
@@ -15,11 +16,13 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "cheerio": "^1.2.0",
+    "geist": "^1.4.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
-    "geist": "^1.4.0"
+    "turndown": "^7.2.4"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.0",
