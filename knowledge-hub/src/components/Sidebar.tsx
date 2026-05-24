@@ -47,7 +47,12 @@ function TopicRow({
         {topic.name}
       </button>
 
-      {isExpanded && topic.files.map(file => {
+      {isExpanded && [...topic.files].sort((a, b) => {
+        if (a.time && b.time) return b.time.localeCompare(a.time);
+        if (a.time) return -1;
+        if (b.time) return 1;
+        return 0;
+      }).map(file => {
         const isActive = currentTopicId === topic.id && currentFileSlug === file.slug;
         return (
           <button
