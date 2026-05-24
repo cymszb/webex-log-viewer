@@ -112,9 +112,9 @@ body { background: var(--color-bg-base); color: var(--color-text-primary); font-
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-code-bg); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #2a3550; }
-* { scrollbar-width: thin; scrollbar-color: #1e2535 transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-default); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+* { scrollbar-width: thin; scrollbar-color: var(--color-border-default) transparent; }
 
 /* ── Responsive ───────────────────────────────────────────────── */
 
