@@ -63,7 +63,7 @@
   border-color: var(--color-border-default); background: var(--color-bg-hover);
   transform: translateX(2px);
 }
-.welcome-article-top { display: flex; align-items: center; gap: 10px; }
+.welcome-article-top { display: flex; align-items: center; justify-content: space-between; }
 .welcome-article-path {
   font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
   text-transform: uppercase; color: var(--color-accent);
@@ -72,7 +72,7 @@
 }
 .welcome-article-name {
   font-size: 14px; font-weight: 550; color: var(--color-text-primary);
-  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   letter-spacing: -0.01em;
 }
 .welcome-article-time {
