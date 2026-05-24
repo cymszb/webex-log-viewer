@@ -58,7 +58,7 @@ function TopicRow({
               padding: `6px 10px 6px ${26 + depth * 12}px`, border: 'none',
               borderRadius: 4, cursor: 'pointer',
               background: isActive ? 'var(--color-bg-active)' : 'none',
-              color: isActive ? 'var(--color-accent)' : '#8090b8',
+              color: isActive ? 'var(--color-accent)' : 'var(--color-text-secondary)',
               fontSize: 12, fontWeight: isActive ? 500 : 400,
               textAlign: 'left', fontFamily: 'inherit',
             }}
