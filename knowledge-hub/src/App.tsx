@@ -23,7 +23,7 @@ export default function App() {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* Tab bar */}
       <div style={{
-        height: 52, display: 'flex', alignItems: 'center', padding: '0 32px', gap: 2,
+        height: 52, display: 'flex', alignItems: 'center', padding: '0 20px', gap: 2,
         background: 'rgba(9,12,18,0.85)', backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid #1e2633',
         flexShrink: 0,
@@ -40,17 +40,17 @@ export default function App() {
         >
           Welcome
         </button>
+        <div style={{ flex: 1 }} />
         <button
-          onClick={() => setView('browse')}
+          onClick={() => setSidebarOpen(true)}
           style={{
-            padding: '9px 18px', borderRadius: 8, fontSize: 13, fontWeight: 500,
+            padding: '9px 14px', borderRadius: 8, fontSize: 18, fontWeight: 500,
             cursor: 'pointer', border: 'none', fontFamily: 'inherit',
-            color: view === 'browse' ? '#e6edf3' : '#8895aa',
-            background: view === 'browse' ? '#11161e' : 'transparent',
-            boxShadow: view === 'browse' ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
+            color: '#8895aa', background: 'transparent', lineHeight: 1,
           }}
+          aria-label="Open sidebar"
         >
-          Browse
+          ☰
         </button>
       </div>
 

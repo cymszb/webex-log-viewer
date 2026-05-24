@@ -84,11 +84,10 @@ body { background: var(--color-bg-base); color: var(--color-text-primary); font-
 
 /* ── Responsive ───────────────────────────────────────────────── */
 
-/* Desktop: sidebar static, hamburger hidden */
+/* Desktop: sidebar static */
 .sidebar-wrap { display: flex; height: 100%; }
 .sidebar-wrap aside { width: 230px; }
 .sidebar-backdrop { display: none; }
-.btn-hamburger   { display: none !important; }
 
 @media (max-width: 767px) {
   /* Sidebar becomes fixed overlay */
@@ -114,8 +113,6 @@ body { background: var(--color-bg-base); color: var(--color-text-primary); font-
     background: rgba(0, 0, 0, 0.5);
     z-index: 99;
   }
-
-  .btn-hamburger { display: inline-flex !important; }
 
   main { padding: 16px 18px !important; }
 }

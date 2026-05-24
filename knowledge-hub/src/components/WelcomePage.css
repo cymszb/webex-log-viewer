@@ -103,10 +103,7 @@
   .welcome-stat { padding: 14px 16px; }
   .welcome-stat-num { font-size: 22px; }
   .welcome-article-card { padding: 14px 16px; }
-  .welcome-article-name {
-    white-space: normal; overflow: visible; text-overflow: unset;
-    font-size: 13px;
-  }
+  .welcome-article-name { font-size: 13px; }
 }
 
 /* ── Mobile: ≤480px ── */

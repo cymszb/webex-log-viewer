@@ -30,17 +30,7 @@ function TopicRow({
   return (
     <div style={{ marginBottom: 2 }}>
       <button
-        onClick={() => {
-          if (hasChildren) {
-            onToggleExpand(topic.id);
-          } else if (topic.files.length > 0) {
-            // Leaf topic with files: expand and navigate to first file
-            onToggleExpand(topic.id);
-            if (!isExpanded && topic.files[0]) {
-              onNavigate(topic.id, topic.files[0].slug);
-            }
-          }
-        }}
+        onClick={() => onToggleExpand(topic.id)}
         style={{
           display: 'flex', alignItems: 'center', gap: 4,
           width: '100%', padding: `8px 6px 8px ${6 + depth * 12}px`, border: 'none',

@@ -46,18 +46,9 @@ export function ContentArea({ currentTopic, currentFile, lang, onSetLang, onOpen
   return (
     <main style={{ flex: 1, overflowY: 'auto', padding: '28px 36px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <button
-          className="btn-hamburger"
-          onClick={onOpenSidebar}
-          aria-label="Open sidebar"
-          style={{
-            display: 'none', background: 'none', border: 'none',
-            color: '#8090b8', fontSize: 20, cursor: 'pointer',
-            padding: '4px 8px', fontFamily: 'inherit',
-          }}
-        >
-          ☰
-        </button>
+        <span style={{ color: '#5a6080', fontSize: 11 }}>
+          {currentFile.time ? new Date(currentFile.time).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+        </span>
         <div style={{ flex: 1 }} />
         <LangToggle
           lang={lang}
