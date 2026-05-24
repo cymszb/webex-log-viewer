@@ -59,7 +59,8 @@ function TopicRow({
             key={file.slug}
             onClick={() => onNavigate(topic.id, file.slug)}
             style={{
-              display: 'block', width: '100%',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+              width: '100%',
               padding: `6px 10px 6px ${26 + depth * 12}px`, border: 'none',
               borderRadius: 4, cursor: 'pointer',
               background: isActive ? 'var(--color-bg-active)' : 'none',
@@ -68,7 +69,12 @@ function TopicRow({
               textAlign: 'left', fontFamily: 'inherit',
             }}
           >
-            {file.name}
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name}</span>
+            {file.time && (
+              <span style={{ color: 'var(--color-text-muted)', fontSize: 10, fontWeight: 400, marginLeft: 8, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                {new Date(file.time).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' })}
+              </span>
+            )}
           </button>
         );
       })}
@@ -111,7 +117,19 @@ export function Sidebar({
       borderRight: '1px solid var(--color-border-subtle)',
       display: 'flex', flexDirection: 'column', flexShrink: 0
     }}>
-      <div style={{ padding: 10, display: 'flex', gap: 6, alignItems: 'center' }}>
+      <div style={{ padding: '16px 14px 8px' }}>
+        <div style={{
+          fontSize: 18, fontWeight: 700, color: 'var(--color-text-primary)',
+          letterSpacing: '-0.02em', lineHeight: 1.15,
+        }}>
+          Knowledge <span style={{
+            background: 'linear-gradient(135deg, var(--color-accent), #a78bfa)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>Hub</span>
+        </div>
+      </div>
+      <div style={{ padding: '0 10px 4px', display: 'flex', gap: 6, alignItems: 'center' }}>
         <input
           type="text"
           placeholder="Search topics..."
