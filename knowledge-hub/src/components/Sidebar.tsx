@@ -36,7 +36,7 @@ function TopicRow({
           width: '100%', padding: `8px 6px 8px ${6 + depth * 12}px`, border: 'none',
           borderRadius: 6, cursor: 'pointer',
           background: 'none',
-          color: isExpanded ? '#c8d0e8' : '#5a6080',
+          color: isExpanded ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
           fontSize: 13, fontWeight: hasChildren ? 600 : 400, textAlign: 'left',
           fontFamily: 'inherit',
         }}
@@ -113,8 +113,8 @@ export function Sidebar({
           value={search}
           onChange={e => setSearch(e.target.value)}
           style={{
-            flex: 1, background: '#111520', border: '1px solid #1e2535',
-            color: '#8090b8', padding: '6px 10px', borderRadius: 6, fontSize: 12,
+            flex: 1, background: 'var(--color-bg-surface)', border: '1px solid var(--color-border-default)',
+            color: 'var(--color-text-secondary)', padding: '6px 10px', borderRadius: 6, fontSize: 12,
             outline: 'none', boxSizing: 'border-box'
           }}
         />
@@ -122,7 +122,7 @@ export function Sidebar({
           <button
             onClick={onClose}
             style={{
-              background: 'none', border: 'none', color: '#5a6080',
+              background: 'none', border: 'none', color: 'var(--color-text-muted)',
               fontSize: 20, cursor: 'pointer', padding: '0 4px',
               lineHeight: 1, fontFamily: 'inherit',
             }}

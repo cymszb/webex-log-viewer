@@ -24,7 +24,7 @@ export function LangToggle({ lang, availableLanguages, onChange }: LangTogglePro
               padding: '4px 12px', borderRadius: 4, fontSize: 12,
               border: 'none', cursor: available ? 'pointer' : 'default',
               background: isActive ? 'var(--color-bg-active)' : 'transparent',
-              color: isActive ? 'var(--color-accent)' : available ? '#5a6080' : '#3a4468',
+              color: isActive ? 'var(--color-accent)' : available ? 'var(--color-text-muted)' : 'var(--color-accent-dim)',
               fontWeight: isActive ? 600 : 400,
               fontFamily: 'var(--font-sans)',
             }}

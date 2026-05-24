@@ -37,7 +37,7 @@ export function ContentArea({ currentTopic, currentFile, lang, onSetLang, onOpen
 
   if (!currentTopic || !currentFile) {
     return (
-      <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5a6080' }}>
+      <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)' }}>
         Select a file to read
       </main>
     );
@@ -46,7 +46,7 @@ export function ContentArea({ currentTopic, currentFile, lang, onSetLang, onOpen
   return (
     <main style={{ flex: 1, overflowY: 'auto', padding: '28px 36px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <span style={{ color: '#5a6080', fontSize: 11 }}>
+        <span style={{ color: 'var(--color-text-muted)', fontSize: 11 }}>
           {currentFile.time ? new Date(currentFile.time).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
         </span>
         <div style={{ flex: 1 }} />
@@ -57,12 +57,12 @@ export function ContentArea({ currentTopic, currentFile, lang, onSetLang, onOpen
         />
       </div>
 
-      <p style={{ color: '#5a6080', fontSize: 12, marginBottom: 6 }}>
+      <p style={{ color: 'var(--color-text-muted)', fontSize: 12, marginBottom: 6 }}>
         {currentTopic.name} / {currentFile.name}
       </p>
 
       {loading ? (
-        <p style={{ color: '#5a6080' }}>Loading...</p>
+        <p style={{ color: 'var(--color-text-muted)' }}>Loading...</p>
       ) : (
         <div className="prose" style={{ fontSize: 14, lineHeight: 1.75 }}>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
