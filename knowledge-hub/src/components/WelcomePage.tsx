@@ -98,9 +98,9 @@ export function WelcomePage({ topics, onNavigate }: WelcomePageProps) {
                 >
                   <div className="welcome-article-top">
                     <span className="welcome-article-path">{getSourceName(topic, file)}</span>
-                    <span className="welcome-article-name">{file.name}</span>
                     <span className="welcome-article-time">{formatDate(file.time)}</span>
                   </div>
+                  <div className="welcome-article-name">{file.name}</div>
                   {file.description && (
                     <div className="welcome-article-desc">{file.description}</div>
                   )}
