@@ -50,9 +50,16 @@ function isPlaywrightSource(source) {
 }
 
 async function scrapePlaywrightSource(source, existing, targetDir, dryRun) {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-blink-features=AutomationControlled',
+    ],
+  });
   const context = await browser.newContext({
-    userAgent: 'KnowledgeHubScraper/1.0',
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    viewport: { width: 1280, height: 720 },
   });
   let added = 0;
   let skipped = 0;
@@ -60,6 +67,10 @@ async function scrapePlaywrightSource(source, existing, targetDir, dryRun) {
   try {
     // 1. Open list page and extract article links
     const page = await context.newPage();
+    // Hide automation
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'webdriver', { get: () => false });
+    });
     console.log(`  Fetching list (Playwright): ${source.listUrl}`);
     await page.goto(source.listUrl, { waitUntil: 'load', timeout: 60000 });
     await page.waitForTimeout(3000);
@@ -68,7 +79,6 @@ async function scrapePlaywrightSource(source, existing, targetDir, dryRun) {
       els.map(el => el.href).filter(href => href)
     );
     console.log(`  Found ${links.length} article links`);
-    await page.close();
 
     // Deduplicate
     const uniqueLinks = [...new Set(links)];
@@ -93,22 +103,35 @@ async function scrapePlaywrightSource(source, existing, targetDir, dryRun) {
 
       try {
         console.log(`  Fetching: ${url}`);
-        const articlePage = await context.newPage();
+
+        // Use a new context per article to avoid Cloudflare session tracking
+        const articleCtx = await browser.newContext({
+          userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+          viewport: { width: 1280, height: 720 },
+        });
+        const articlePage = await articleCtx.newPage();
+        await articlePage.addInitScript(() => {
+          Object.defineProperty(navigator, 'webdriver', { get: () => false });
+        });
         await articlePage.goto(url, { waitUntil: 'load', timeout: 60000 });
         await articlePage.waitForTimeout(3000);
+
+        // Try to wait for h1, fall back to immediate check
+        await articlePage.waitForSelector('h1', { timeout: 5000 }).catch(() => {});
+        await articlePage.waitForTimeout(1000);
 
         // Extract title from <h1>
         const title = await articlePage.$eval('h1', el => el.textContent.trim()).catch(() => null);
         if (!title) {
           console.log(`  Skipping: no <h1> found`);
-          await articlePage.close();
+          await articleCtx.close();
           continue;
         }
 
         const fileSlug = slugify(title) || urlSlug;
         if (existing.has(fileSlug)) {
           console.log(`  Skipping: ${fileSlug}.md already exists`);
-          await articlePage.close();
+          await articleCtx.close();
           skipped++;
           continue;
         }
@@ -117,7 +140,7 @@ async function scrapePlaywrightSource(source, existing, targetDir, dryRun) {
         const contentEl = await articlePage.$(source.content);
         if (!contentEl) {
           console.log(`  Skipping: content selector "${source.content}" not found`);
-          await articlePage.close();
+          await articleCtx.close();
           continue;
         }
         const contentHtml = await contentEl.innerHTML();
@@ -173,7 +196,7 @@ async function scrapePlaywrightSource(source, existing, targetDir, dryRun) {
         await writeFile(filePath, fileContent);
         console.log(`  Added: ${fileSlug}.md (${pubTime})`);
         existing.add(fileSlug);
-        await articlePage.close();
+        await articleCtx.close();
         added++;
       } catch (err) {
         console.log(`  Error: ${err.message}`);
