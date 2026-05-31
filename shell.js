@@ -51,12 +51,19 @@ function renderNav(tools) {
   const rail = document.getElementById('nav-rail');
   const bar  = document.getElementById('nav-bar');
 
+  // Rail title
+  const title = document.createElement('div');
+  title.className = 'rail-title';
+  title.innerHTML = 'Webex <span>Tools</span>';
+  rail.appendChild(title);
+
   const makeItem = (tool, includeLabel) => {
     const btn = document.createElement('button');
     btn.className = 'nav-item';
     btn.dataset.id = tool.id;
     btn.setAttribute('aria-label', tool.label);
-    btn.innerHTML = (ICONS[tool.icon] || '') +
+    const iconWrap = `<span class="nav-icon">${ICONS[tool.icon] || ''}</span>`;
+    btn.innerHTML = iconWrap +
       (includeLabel ? `<span class="nav-label">${tool.label}</span>` : '') +
       (!includeLabel ? `<span class="nav-tooltip">${tool.label}</span>` : '');
     btn.addEventListener('click', () => activateTool(tool.id));
@@ -64,7 +71,7 @@ function renderNav(tools) {
   };
 
   tools.forEach(tool => {
-    rail.appendChild(makeItem(tool, false));
+    rail.appendChild(makeItem(tool, true));
     bar.appendChild(makeItem(tool, true));
   });
 
@@ -73,7 +80,7 @@ function renderNav(tools) {
   settingsBtn.className = 'nav-item nav-settings';
   settingsBtn.setAttribute('aria-label', 'Settings');
   settingsBtn.setAttribute('aria-disabled', 'true');
-  settingsBtn.innerHTML = ICONS.settings + '<span class="nav-tooltip">Settings</span>';
+  settingsBtn.innerHTML = '<span class="nav-icon">' + ICONS.settings + '</span><span class="nav-label">Settings</span>';
   rail.appendChild(settingsBtn);
 }
 

@@ -14,7 +14,21 @@ function useTheme(): [Theme, () => void] {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
+    // Broadcast to parent shell so all tools stay in sync
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'set-theme', theme }, '*');
+    }
   }, [theme]);
+  // Listen for theme changes from parent shell (other tools)
+  useEffect(() => {
+    function onMsg(e: MessageEvent) {
+      if (e.data && e.data.type === 'set-theme') {
+        setTheme(e.data.theme as Theme);
+      }
+    }
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
   return [theme, () => setTheme(t => t === 'dark' ? 'light' : 'dark')];
 }
 
@@ -40,7 +54,7 @@ export default function App() {
         flexShrink: 0,
       }}>
         <button
-          onClick={() => setSidebarOpen(true)}
+          onClick={() => { setView('browse'); setSidebarOpen(true); }}
           style={{
             padding: '9px 14px', borderRadius: 8, fontSize: 18, fontWeight: 500,
             cursor: 'pointer', border: 'none', fontFamily: 'inherit',

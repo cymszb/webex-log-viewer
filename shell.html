@@ -17,8 +17,20 @@
       --text-dim:   #8090b8;
       --text:       #d4d8e1;
       --accent:     #60a5fa;
-      --rail-width: 52px;
+      --rail-width: 170px;
       --bar-height: 56px;
+    }
+
+    [data-theme="light"] {
+      --bg-base:    #f4f5f7;
+      --bg-nav:     #ffffff;
+      --bg-hover:   #edeff3;
+      --bg-active:  #e2e5f0;
+      --border:     #dde0e5;
+      --text-muted: #8b95a5;
+      --text-dim:   #5c637a;
+      --text:       #1a1d2e;
+      --accent:     #4a63cc;
     }
 
     html, body { height: 100%; background: var(--bg-base); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
@@ -40,10 +52,24 @@
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 12px 0;
-      gap: 4px;
+      align-items: stretch;
+      padding: 8px 8px;
+      gap: 2px;
       flex-shrink: 0;
+    }
+
+    .rail-title {
+      font-size: 16px; font-weight: 700;
+      padding: 10px 10px 12px;
+      margin-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .rail-title span {
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     #nav-rail .nav-settings { margin-top: auto; }
@@ -55,17 +81,19 @@
       position: relative;
       display: flex;
       align-items: center;
-      justify-content: center;
       background: none;
       border: none;
       cursor: pointer;
       color: var(--text-muted);
       border-radius: 8px;
       transition: background 0.15s, color 0.15s;
+      gap: 10px;
     }
 
     /* Rail item sizing */
-    #nav-rail .nav-item { width: 40px; height: 40px; }
+    #nav-rail .nav-item { width: 100%; height: 38px; padding: 0 10px; justify-content: flex-start; }
+    #nav-rail .nav-item .nav-icon { flex-shrink: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+    #nav-rail .nav-item .nav-label { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     .nav-item:hover  { background: var(--bg-hover); color: var(--text-dim); }
     .nav-item.active { background: var(--bg-active); color: var(--accent); }
@@ -88,7 +116,7 @@
       position: absolute;
       left: calc(var(--rail-width) + 4px);
       top: 50%; transform: translateY(-50%);
-      background: #1a1d2e;
+      background: var(--bg-hover);
       color: var(--text);
       font-size: 12px;
       padding: 4px 8px;
@@ -154,5 +182,27 @@
     <nav id="nav-bar" aria-label="Tools"></nav>
   </div>
   <script src="shell.js"></script>
+  <script>
+(function() {
+  var THEME_KEY = 'theme';
+  function apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    // Broadcast to all iframe tools
+    var iframes = document.querySelectorAll('iframe');
+    for (var i = 0; i < iframes.length; i++) {
+      try { iframes[i].contentWindow.postMessage({ type: 'set-theme', theme: theme }, '*'); } catch(e) {}
+    }
+  }
+  // Init from localStorage
+  apply(localStorage.getItem(THEME_KEY) || 'dark');
+  // Listen for theme changes from iframe tools — update shell + broadcast to all
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'set-theme') {
+      localStorage.setItem(THEME_KEY, e.data.theme);
+      apply(e.data.theme);
+    }
+  });
+})();
+</script>
 </body>
 </html>
