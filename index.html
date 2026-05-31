@@ -647,6 +647,7 @@
     .modal-event-badge.metric { background: #0e2030; border-color: #1a4060; color: #38bdf8; }
     .modal-event-badge.dot    { background: #1a1e2e; border-color: #2a3050; color: #6878a8; }
     .modal-event-badge.gantt  { background: #1a1228; border-color: #2a1a40; color: #a78bfa; }
+    .modal-event-badge.combined { background: #062020; border-color: #1a4040; color: #2dd4bf; }
     .modal-event-inline-form {
       background: #0e1220; border: 1px solid #2a3050; border-radius: 6px;
       padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px;
@@ -1620,14 +1621,14 @@ function renderModalEventsList(topic, readOnly = false) {
     return;
   }
   container.innerHTML = events.map(ev => {
-    const mode = ev.value_regex ? 'metric' : ((ev.end_keywords||[]).length > 0 ? 'gantt' : 'dot');
+    const mode = getEventMode(ev);
     return `
     <div class="modal-event-row" data-eid="${ev.id}">
       <span class="modal-event-dot" style="background:${ev.color}"></span>
       <span class="modal-event-name">${esc(ev.name)}</span>
       <span class="modal-event-badge ${mode}">${mode}</span>
       ${readOnly ? '' : `
-        <button class="icon-btn modal-ev-edit-btn" data-eid="${ev.id}" title="Edit">&#9998;</button>
+        <button class="icon-btn modal-ev-edit-btn edit-btn" data-eid="${ev.id}" title="Edit">&#9998;</button>
         <button class="icon-btn modal-ev-copy-btn" data-eid="${ev.id}" title="Copy event">&#x2398;</button>
         <button class="icon-btn modal-ev-del-btn" data-eid="${ev.id}" title="Delete">&#128465;</button>
       `}
@@ -1653,21 +1654,33 @@ function openModalEventForm(topic, event = null) {
   const form = document.createElement('div');
   form.id = 'modal-event-inline-form';
   form.className = 'modal-event-inline-form';
+  const currentMode = event ? getEventMode(event) : 'dot';
   form.innerHTML = `
     <input type="hidden" id="modal-event-edit-id" value="${event ? event.id : ''}" />
+    <div style="margin-bottom:6px;">
+      <span class="modal-field-label">Type</span>
+      <div id="modal-event-type-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+        ${['dot','gantt','metric','combined'].map(t =>
+          `<button type="button" class="modal-event-type-btn${currentMode===t?' active':''}" data-type="${t}"
+            style="padding:3px 10px;border-radius:4px;font-size:11px;cursor:pointer;border:1px solid #2e3250;
+            background:${currentMode===t?'#0e2040':'#0d1020'};color:${currentMode===t?'#60a5fa':'#5a6080'};"
+          >${t}</button>`
+        ).join('')}
+      </div>
+    </div>
     <div>
       <span class="modal-field-label">Name</span>
       <input type="text" id="modal-event-name-input" placeholder="Event name…" value="${event ? esc(event.name) : ''}" />
     </div>
     <div>
       <span class="modal-field-label">Start keywords (comma-separated)</span>
-      <input type="text" id="modal-event-start-kw-input" placeholder="e.g. connect, login" value="${event ? esc((event.start_keywords||[]).join(', ')) : ''}" />
+      <input type="text" id="modal-event-start-kw-input" placeholder="e.g. connect, login" value="${event ? esc(Array.isArray(event.start_keywords) ? event.start_keywords.join(', ') : (event.start_keywords||'')) : ''}" />
     </div>
-    <div>
+    <div id="modal-event-end-kw-row">
       <span class="modal-field-label">End keywords (optional)</span>
-      <input type="text" id="modal-event-end-kw-input" placeholder="e.g. disconnect" value="${event ? esc((event.end_keywords||[]).join(', ')) : ''}" />
+      <input type="text" id="modal-event-end-kw-input" placeholder="e.g. disconnect" value="${event ? esc(Array.isArray(event.end_keywords) ? event.end_keywords.join(', ') : (event.end_keywords||'')) : ''}" />
     </div>
-    <div>
+    <div id="modal-event-value-regex-row">
       <span class="modal-field-label">Value regex (optional — enables metric chart)</span>
       <input type="text" id="modal-event-value-regex-input" placeholder="e.g. CPU:([\\d.]+)" value="${event ? esc(event.value_regex||'') : ''}" />
     </div>
@@ -1675,6 +1688,7 @@ function openModalEventForm(topic, event = null) {
       <span class="modal-field-label">Color</span>
       <div id="modal-event-color-palette" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
     </div>
+    <div id="modal-event-children-section" style="display:none;"></div>
     <div style="display:flex;gap:6px;margin-top:4px;">
       <button id="btn-modal-event-save" class="primary" style="flex:1;font-size:0.78rem;">Save</button>
       <button id="btn-modal-event-cancel" style="flex:1;font-size:0.78rem;">Cancel</button>
@@ -1693,6 +1707,103 @@ function openModalEventForm(topic, event = null) {
   }
   renderEvPalette();
 
+  // ── Type selector wiring ──────────────────────────────────────────────
+  let selectedType = currentMode;
+
+  function updateTypeUI() {
+    document.querySelectorAll('.modal-event-type-btn').forEach(btn => {
+      const active = btn.dataset.type === selectedType;
+      btn.style.background  = active ? '#0e2040' : '#0d1020';
+      btn.style.color       = active ? '#60a5fa' : '#5a6080';
+      btn.style.borderColor = active ? '#60a5fa' : '#2e3250';
+    });
+    const endKwRow     = document.getElementById('modal-event-end-kw-row');
+    const valueRxRow   = document.getElementById('modal-event-value-regex-row');
+    const childSection = document.getElementById('modal-event-children-section');
+    endKwRow.style.display     = selectedType === 'metric' ? 'none' : '';
+    valueRxRow.style.display   = selectedType === 'metric' ? '' : 'none';
+    childSection.style.display = selectedType === 'combined' ? '' : 'none';
+    if (selectedType === 'combined') renderChildrenSection();
+  }
+
+  document.querySelectorAll('.modal-event-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedType = btn.dataset.type;
+      updateTypeUI();
+    });
+  });
+
+  // ── Child events state and rendering ─────────────────────────────────
+  let childEvents = (event && event.child_events) ? event.child_events.map(c => ({ ...c })) : [];
+
+  function syncChildInputs() {
+    const section = document.getElementById('modal-event-children-section');
+    if (!section) return;
+    section.querySelectorAll('.child-name-input').forEach(inp => {
+      const idx = parseInt(inp.dataset.idx);
+      if (childEvents[idx]) childEvents[idx].name = inp.value;
+    });
+    section.querySelectorAll('.child-kw-input').forEach(inp => {
+      const idx = parseInt(inp.dataset.idx);
+      if (childEvents[idx]) childEvents[idx].start_keywords = inp.value.trim().split(',').map(k => k.trim()).filter(Boolean);
+    });
+  }
+
+  function renderChildrenSection() {
+    const section = document.getElementById('modal-event-children-section');
+    if (!section) return;
+    section.innerHTML = `
+      <div style="border:1px solid #1a2a3a;border-radius:6px;background:#0b0f1c;overflow:hidden;margin-top:2px;">
+        <div style="padding:6px 10px;font-size:10px;color:#3a6080;text-transform:uppercase;letter-spacing:.08em;background:#0d1525;border-bottom:1px solid #1a2a3a;display:flex;align-items:center;gap:8px;">
+          <span style="flex:1">Child dot events</span>
+          <button type="button" id="btn-add-child-event" style="font-size:10px;padding:2px 8px;background:#0e2535;border:1px solid #1a4060;color:#38bdf8;border-radius:3px;cursor:pointer;">+ Add child</button>
+        </div>
+        <div id="child-events-list">
+          ${childEvents.map((c, i) => renderChildRow(c, i)).join('')}
+        </div>
+        ${childEvents.length === 0 ? '<div style="padding:8px 10px;font-size:11px;color:#3a4460;font-style:italic;">No child events yet.</div>' : ''}
+      </div>
+      <div style="font-size:10px;color:#3a4460;font-style:italic;margin-top:3px;">Each child matches log lines by keyword and appears as a labeled dot on the bar.</div>`;
+
+    document.getElementById('btn-add-child-event').addEventListener('click', () => {
+      syncChildInputs();
+      childEvents.push({ id: 'cev-' + Date.now() + '-' + Math.floor(Math.random() * 10000), name: '', start_keywords: [], color: TOPIC_COLORS[childEvents.length % TOPIC_COLORS.length] });
+      renderChildrenSection();
+    });
+    section.querySelectorAll('.btn-del-child').forEach(btn => {
+      btn.addEventListener('click', () => {
+        syncChildInputs();
+        childEvents.splice(parseInt(btn.dataset.idx), 1);
+        renderChildrenSection();
+      });
+    });
+    section.querySelectorAll('.child-color-swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        syncChildInputs();
+        childEvents[parseInt(sw.dataset.idx)].color = sw.dataset.color;
+        renderChildrenSection();
+      });
+    });
+  }
+
+  function renderChildRow(c, i) {
+    const swatches = TOPIC_COLORS.map(col =>
+      `<span class="child-color-swatch color-swatch${col===c.color?' selected':''}" data-color="${col}" data-idx="${i}" style="background:${col};width:14px;height:14px;border-radius:50%;display:inline-block;cursor:pointer;border:2px solid ${col===c.color?'#fff':'#2e3250'};"></span>`
+    ).join('');
+    return `
+      <div class="child-event-row" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid #111828;">
+        <span style="width:8px;height:8px;border-radius:50%;background:${c.color};flex-shrink:0;display:inline-block;"></span>
+        <input type="text" class="child-name-input" data-idx="${i}" placeholder="Name…" value="${esc(c.name)}"
+          style="flex:1;padding:3px 6px;font-size:11px;background:#0d1020;border:1px solid #2e3250;border-radius:4px;color:#d4d8e1;" />
+        <input type="text" class="child-kw-input" data-idx="${i}" placeholder="start keywords…" value="${esc((c.start_keywords||[]).join(', '))}"
+          style="flex:1.4;padding:3px 6px;font-size:11px;background:#0d1020;border:1px solid #2e3250;border-radius:4px;color:#d4d8e1;" />
+        <div style="display:flex;gap:3px;flex-wrap:wrap;max-width:80px;">${swatches}</div>
+        <button type="button" class="btn-del-child" data-idx="${i}" style="font-size:11px;color:#3e4460;background:none;border:none;cursor:pointer;padding:0 3px;" title="Delete">✕</button>
+      </div>`;
+  }
+
+  updateTypeUI();  // set initial visibility
+
   document.getElementById('modal-event-name-input').focus();
 
   const saveEv = async () => {
@@ -1703,7 +1814,19 @@ function openModalEventForm(topic, event = null) {
     const end_keywords   = document.getElementById('modal-event-end-kw-input').value.trim();
     const value_regex    = document.getElementById('modal-event-value-regex-input').value.trim();
     if (!name) return;
-    const body = { name, start_keywords, end_keywords, value_regex, color: evColor };
+    // Sync child event inputs into state before saving
+    if (selectedType === 'combined') {
+      syncChildInputs();
+    }
+    const validChildren = childEvents.filter(c => c.name);
+    const body = {
+      name,
+      start_keywords,
+      end_keywords,
+      value_regex: selectedType === 'metric' ? value_regex : '',
+      color: evColor,
+      ...(selectedType === 'combined' && validChildren.length > 0 ? { child_events: validChildren } : {})
+    };
     if (eid) {
       await api.updateEvent(editingTopicId, eid, body);
     } else {
@@ -1778,6 +1901,13 @@ function expandSidebar() {
 }
 
 // ── Timeline (Topic Visualization) ───────────────────────────────────
+function getEventMode(ev) {
+  if (ev.child_events && ev.child_events.length > 0) return 'combined';
+  if (ev.value_regex) return 'metric';
+  if ((ev.end_keywords || []).length > 0) return 'gantt';
+  return 'dot';
+}
+
 function getAllEvents() {
   return topicsState
     .filter(t => t.enabled)
@@ -1799,6 +1929,47 @@ function buildGanttRows(allEvents, logs, minT, maxT, spanMs) {
     const sk = (ev.start_keywords || []).map(k => k.toLowerCase());
     const ek = (ev.end_keywords   || []).map(k => k.toLowerCase());
     const vr = (ev.value_regex || '').trim();
+
+    // ── Combined mode: gantt spans + child dot hits ──────────────────
+    if (ev.child_events && ev.child_events.length > 0) {
+      // Build spans (same logic as gantt)
+      const spans = [];
+      let openSpan = null;
+      for (let i = 0; i < logs.length; i++) {
+        const l = logs[i];
+        if (l.raw || !l.timestamp) continue;
+        const t = Date.parse(l.timestamp);
+        if (isNaN(t)) continue;
+        const haystack = (l.message + ' ' + (l.class_method||'') + ' ' + (l.source_file||'')).toLowerCase();
+        const xFrac = (t - minT) / spanMs;
+        if (!openSpan && sk.some(k => k && haystack.includes(k))) {
+          openSpan = { startFrac: xFrac, startLogIdx: i };
+        } else if (openSpan && ek.some(k => k && haystack.includes(k))) {
+          spans.push({ ...openSpan, endFrac: xFrac, endLogIdx: i });
+          openSpan = null;
+        }
+      }
+      if (openSpan) spans.push({ ...openSpan, endFrac: null, endLogIdx: null });
+
+      // Build child hits (scan ALL log lines per child — not filtered by span)
+      const childHits = {};
+      for (const child of ev.child_events) {
+        const csk = (child.start_keywords || []).map(k => k.toLowerCase());
+        const hits = [];
+        for (let i = 0; i < logs.length; i++) {
+          const l = logs[i];
+          if (l.raw || !l.timestamp) continue;
+          const t = Date.parse(l.timestamp);
+          if (isNaN(t)) continue;
+          const haystack = (l.message + ' ' + (l.class_method||'') + ' ' + (l.source_file||'')).toLowerCase();
+          const xFrac = (t - minT) / spanMs;
+          if (csk.some(k => k && haystack.includes(k))) hits.push({ xFrac, logIdx: i });
+        }
+        childHits[child.id] = hits;
+      }
+      rows[ev.id] = { mode: 'combined', spans, childHits };
+      continue;
+    }
 
     if (vr) {
       // ── Metric mode: extract numeric value from matching lines ──
@@ -2010,6 +2181,60 @@ function drawEventRow(canvas, ev, dpr) {
   // Subtle baseline
   ctx.strokeStyle = '#1e2238';
   ctx.beginPath(); ctx.moveTo(0, H/2); ctx.lineTo(W, H/2); ctx.stroke();
+
+  if (rowData.mode === 'combined') {
+    const { spans, childHits } = rowData;
+    const barH = 12;
+    const barY = (H - barH) / 2;
+    const capW = 3;
+
+    // Draw gantt bars
+    for (const span of spans) {
+      const x1 = Math.round(span.startFrac * W);
+      const x2 = span.endFrac !== null ? Math.round(span.endFrac * W) : W;
+      const barW = Math.max(capW * 2 + 1, x2 - x1);
+      ctx.globalAlpha = 0.35;
+      ctx.fillStyle = ev.color;
+      ctx.fillRect(x1, barY, barW, barH);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = ev.color;
+      ctx.fillRect(x1, barY, capW, barH);
+      if (span.endFrac !== null) {
+        ctx.fillRect(x1 + barW - capW, barY, capW, barH);
+      } else {
+        ctx.setLineDash([3, 2]);
+        ctx.strokeStyle = ev.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(x1 + barW, barY); ctx.lineTo(x1 + barW, barY + barH); ctx.stroke();
+        ctx.setLineDash([]); ctx.lineWidth = 1;
+      }
+    }
+
+    // Draw child dots with mini labels above
+    const dotR = 5;
+    const labelY = barY - 10;
+    ctx.font = '8px sans-serif';
+    ctx.textAlign = 'center';
+    for (const child of (ev.child_events || [])) {
+      const hits = childHits[child.id] || [];
+      for (const h of hits) {
+        const cx = Math.round(h.xFrac * W);
+        ctx.fillStyle = child.color;
+        ctx.beginPath();
+        ctx.arc(cx, H / 2, dotR, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#090c17';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, H / 2, dotR, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.lineWidth = 1;
+        ctx.fillStyle = '#8090b8';
+        ctx.fillText(child.name, cx, labelY);
+      }
+    }
+    return;
+  }
 
   if (rowData.mode === 'dots') {
     ctx.fillStyle = ev.color;
