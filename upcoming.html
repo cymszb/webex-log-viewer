@@ -6,10 +6,25 @@
   <title>Coming Soon</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-base:    #0a0d14;
+      --text:       #d4d8e1;
+      --text-dim:   #a0b8d8;
+      --text-muted: #5a6080;
+    }
+
+    [data-theme="light"] {
+      --bg-base:    #f4f5f7;
+      --text:       #1a1d2e;
+      --text-dim:   #4a63cc;
+      --text-muted: #8b95a5;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0d14;
-      color: #d4d8e1;
+      background: var(--bg-base);
+      color: var(--text);
       height: 100vh;
       display: flex;
       align-items: center;
@@ -17,8 +32,8 @@
       flex-direction: column;
       gap: 12px;
     }
-    h1 { font-size: 22px; font-weight: 600; color: #a0b8d8; }
-    p  { font-size: 14px; color: #5a6080; }
+    h1 { font-size: 22px; font-weight: 600; color: var(--text-dim); }
+    p  { font-size: 14px; color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -42,6 +57,20 @@
   <script>
     const n = new URLSearchParams(location.search).get('name');
     if (n) document.getElementById('tool-name').textContent = n;
+  </script>
+  <script>
+(function() {
+  var THEME_KEY = 'theme';
+  function apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+  apply(localStorage.getItem(THEME_KEY) || 'dark');
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'set-theme') {
+      apply(e.data.theme);
+    }
+  });
+})();
   </script>
 </body>
 </html>
