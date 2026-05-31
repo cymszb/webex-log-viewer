@@ -61,7 +61,8 @@ async function scrapePlaywrightSource(source, existing, targetDir, dryRun) {
     // 1. Open list page and extract article links
     const page = await context.newPage();
     console.log(`  Fetching list (Playwright): ${source.listUrl}`);
-    await page.goto(source.listUrl, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.goto(source.listUrl, { waitUntil: 'load', timeout: 60000 });
+    await page.waitForTimeout(3000);
 
     const links = await page.$$eval(source.listItem, els =>
       els.map(el => el.href).filter(href => href)
@@ -93,7 +94,8 @@ async function scrapePlaywrightSource(source, existing, targetDir, dryRun) {
       try {
         console.log(`  Fetching: ${url}`);
         const articlePage = await context.newPage();
-        await articlePage.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+        await articlePage.goto(url, { waitUntil: 'load', timeout: 60000 });
+        await articlePage.waitForTimeout(3000);
 
         // Extract title from <h1>
         const title = await articlePage.$eval('h1', el => el.textContent.trim()).catch(() => null);
