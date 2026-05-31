@@ -11,12 +11,23 @@
     },
     {
       "name": "OpenAI Engineering",
+      "type": "playwright",
       "listUrl": "https://openai.com/news/engineering/",
-      "listItem": "a[id][aria-label]",
-      "content": "main article",
+      "listItem": "a[aria-label][href*=\"/index/\"]",
+      "content": "article",
       "timeSelector": ".text-meta.text-primary-100",
       "descSelector": null,
       "targetFolder": "AI-Engineering/OpenAI"
+    },
+    {
+      "name": "Claude Tutorials",
+      "type": "playwright",
+      "listUrl": "https://claude.com/resources/tutorials/",
+      "listItem": "a[href*=\"/tutorials/\"]",
+      "content": "[class*=\"prose\"]",
+      "timeSelector": null,
+      "descSelector": null,
+      "targetFolder": "AI-Engineering/Claude-Tutorials"
     }
   ]
 }
