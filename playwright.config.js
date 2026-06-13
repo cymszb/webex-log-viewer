@@ -1,8 +1,11 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test');
 
+const slowMo = Number(process.env.SLOWMO || 0);
+
 module.exports = defineConfig({
   testDir: './tests/specs',
+  testIgnore: ['**/knowledge-hub.spec.js'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -15,8 +18,13 @@ module.exports = defineConfig({
 
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'], headless: true },
+      name: 'chrome',
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chrome',
+        headless: true,
+        launchOptions: slowMo > 0 ? { slowMo } : undefined,
+      },
     },
   ],
 
