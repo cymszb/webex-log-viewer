@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Webex Log Viewer",
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:headed:slow": "SLOWMO=250 playwright test --headed --workers=1"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0"
