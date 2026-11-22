@@ -70,6 +70,24 @@ test.describe('Topic CRUD', () => {
     await expect(frame.locator('#topic-list')).toContainText('My Test Topic');
   });
 
+  test('Copy topic creates a new topic from existing values', async ({ page }) => {
+    const frame = page.frameLocator('#tool-frame');
+    await createTopic(page, frame, 'Source Topic', 'SourceRegex');
+
+    const sourceRow = frame.locator('.topic-row', { hasText: 'Source Topic' });
+    await sourceRow.locator('button.overflow-btn').click();
+    await frame.locator('.topic-overflow-menu .copy-menu-item').click();
+
+    await expect(frame.locator('#modal-title')).toContainText('New Topic (Copy)');
+    await expect(frame.locator('#modal-regex-input')).toHaveValue('SourceRegex');
+    await frame.locator('#modal-name-input').fill('Copied Topic');
+    await frame.locator('#btn-modal-save:not([disabled])').waitFor();
+    await frame.locator('#btn-modal-save').click();
+
+    await expect(frame.locator('#topic-list')).toContainText('Source Topic');
+    await expect(frame.locator('#topic-list')).toContainText('Copied Topic');
+  });
+
   test('Create combined event with child events', async ({ page }) => {
     const frame = page.frameLocator('#tool-frame');
 

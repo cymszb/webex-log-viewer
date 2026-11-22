@@ -1,0 +1,4 @@
+interface:
+  display_name: "Log Viewer E2E Sanity"
+  short_description: "Run visible serial Log Viewer sanity tests"
+  default_prompt: "Use $log-viewer-e2e-sanity after my Log Viewer change."

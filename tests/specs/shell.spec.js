@@ -15,16 +15,10 @@ test.describe('Shell', () => {
     await expect(active).toHaveAttribute('aria-label', 'Log Viewer');
   });
 
-  test('switching to Knowledge Hub loads the React app', async ({ page }) => {
-    await page.locator('#nav-rail .nav-item[aria-label="Knowledge Hub"]').click();
+  test('loads Log Viewer iframe by default', async ({ page }) => {
     const frame = page.frameLocator('#tool-frame');
-    // The knowledge hub renders a sidebar with topic navigation
-    await expect(frame.locator('aside')).toBeVisible({ timeout: 10000 });
-  });
-
-  test('URL updates when switching tools', async ({ page }) => {
-    await page.locator('#nav-rail .nav-item[aria-label="Knowledge Hub"]').click();
-    await expect(page).toHaveURL(/tool=knowledge-hub/);
+    await expect(frame.locator('#filter-panel')).toBeVisible();
+    await expect(frame.locator('#topic-list')).toBeVisible();
   });
 
   test('index.html redirects to shell', async ({ page }) => {
